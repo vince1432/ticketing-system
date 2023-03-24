@@ -15,15 +15,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('user')->group(function () {
-    Route::get('/', [UserController::class, 'index']);
-});
+// Route::get('')
 
-Route::post('/tokens/create', function (Request $request) {
-    $token = $request->user()->createToken($request->token_name);
+// Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('/users', UserController::class);
+// });
 
-    return ['token' => $token->plainTextToken];
-});
+// Route::post('/tokens/create', function (Request $request) {
+//     $token = $request->user()->createToken($request->token_name);
+
+//     return ['token' => $token->plainTextToken];
+// });
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
