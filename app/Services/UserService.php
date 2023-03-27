@@ -30,7 +30,7 @@ class UserService implements UserServiceInterface
 
         $user = $this->user_repository->get($user_id);
 
-        return $user;
+        return $user->toArray();
     }
 
     public function store($request) {
@@ -45,7 +45,7 @@ class UserService implements UserServiceInterface
         $token = $new_user->createToken("Token of " . $new_user["name"])->plainTextToken;
 
         $response = array(
-            "user" => $new_user,
+            "user" => $new_user->toArray(),
             "token" => $token
         );
 
@@ -66,7 +66,7 @@ class UserService implements UserServiceInterface
 
         $user = $this->user_repository->update($validated, $user_id);
 
-        return $user;
+        return $user->toArray();
     }
 
     public function destroy($user_id) {

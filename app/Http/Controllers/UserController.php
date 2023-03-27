@@ -17,6 +17,7 @@ class UserController extends BaseController
     public function __construct( UserServiceInterface $user_service)
     {
         $this->user_service = $user_service;
+        $this->model = "User";
         // set base controller service
         $this->setService($this->user_service);
     }
