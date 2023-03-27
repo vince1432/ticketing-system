@@ -33,6 +33,8 @@ class BaseController extends Controller
         $item_count = $query_params['item_count'] ?? 10;
 
         $response = $this->base_service->index($item_count);
+        $response["status"] = "Success";
+        $response["message"] = "Success.";
 
         return response()->json($response, 200);
     }
