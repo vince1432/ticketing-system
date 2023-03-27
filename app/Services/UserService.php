@@ -17,8 +17,10 @@ class UserService implements UserServiceInterface
 
     public function index($count = 10)
     {
-        $data = $this->user_repository->all($count);
-        return $data->toArray();
+        $data = $this->user_repository->all($count)->toArray();
+        $data["status"] = "Success";
+        $data["message"] = "Success.";
+        return $data;
     }
 
     public function show($user_id) {
