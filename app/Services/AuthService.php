@@ -28,7 +28,7 @@ class AuthService implements AuthServiceInterface
         // dd($user);
         if(!$user || Hash::check($validated['password'], $user->password)) {
             $this->status = 401;
-            return null;
+            return array();
         }
         else if (Hash::needsRehash($user->password)) {
             $user->password = Hash::make($validated['password']);
