@@ -25,7 +25,7 @@ class UserService implements UserServiceInterface
 
         if(!$this->user_repository->exist($user_id)) {
             $this->status = 404;
-            return null;
+            return array();
         }
 
         $user = $this->user_repository->get($user_id);
@@ -61,7 +61,7 @@ class UserService implements UserServiceInterface
 
         if(!$this->user_repository->exist($user_id)) {
             $this->status = 404;
-            return null;
+            return array();
         }
 
         $user = $this->user_repository->update($validated, $user_id);
