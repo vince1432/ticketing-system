@@ -196,6 +196,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         //custom providers
+        App\Providers\AuthRepositoryProvider::class,
         App\Providers\UserRepositoryProvider::class,
         App\Providers\UserServiceProvider::class,
     ],
