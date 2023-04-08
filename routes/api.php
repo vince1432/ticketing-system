@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 // Route::get('')
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/ticket', [TicketController::class, 'store']);
 // TODO:
 // gates
 // token timeout
@@ -26,9 +28,17 @@ Route::post('/login', [AuthController::class, 'login']);
 // refresh token
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::apiResource('/users', UserController::class);
+    Route::apiResource('/user', UserController::class);
+    Route::prefix('/ticket/comment')->group(function () {
+        Route::get('/', [TicketController::class, 'comments']);
+        Route::get('/{ticket}', [TicketController::class, 'comment']);
+        Route::patch('/{ticket}', [TicketController::class, 'updateComment']);
+        Route::delete('/{ticket}', [TicketController::class, 'removeComment']);
+        Route::post('/', [TicketController::class, 'addComment']);
+    });
+    Route::patch('/ticket/close/{ticket}', [TicketController::class, 'close']);
+    Route::apiResource('/ticket', TicketController::class)->except('store', 'destroy');
 });
-
 // Route::post('/tokens/create', function (Request $request) {
 //     $token = $request->user()->createToken($request->token_name);
 
