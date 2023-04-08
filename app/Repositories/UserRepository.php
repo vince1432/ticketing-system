@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Contract\UserRepositoryInterface;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
