@@ -65,6 +65,21 @@ class TicketRepository implements TicketRepositoryInterface
         return Ticket::where('id', $id)->delete();
     }
 
+    public function count($user_id = 0, $start_date = 0, $end_date = 0)
+    {
+        $count = Ticket::selectRaw('COUNT(closed_at IS NULL) AS open')
+                ->selectRaw('COUNT(closed_at IS NOT NULL) AS closed')
+                ->first();
+
+        if($user_id)
+            $count = $count->where('assigned_to', $user_id);
+
+        if($start_date)
+            $count = $count->whereBetweenColumns($start_date, ['created_at', $start_date]);
+
+        return;
+    }
+
     public function exist($id)
     {
         return Ticket::select('id')->where('id', $id)->exists();
