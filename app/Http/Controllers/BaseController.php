@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class BaseController extends Controller
 {
     private $base_service;
-    private $model;
+    public $model;
 
     /**
      * set class service
@@ -50,7 +50,7 @@ class BaseController extends Controller
         $new_record = $this->base_service->store($request);
         $response = array(
             "status" => "Success",
-            "message" => "Success.",
+            "message" => "{$this->model} successfuly created.",
             "data" => $new_record
         );
 
@@ -101,7 +101,7 @@ class BaseController extends Controller
         else
             $response = array(
                 "status" => "Success",
-                "message" => "Success.",
+                "message" => "{$this->model} successfuly updated.",
                 "data" => $data
             );
 
@@ -120,7 +120,7 @@ class BaseController extends Controller
 
         $response = array(
             "status" => "Success",
-            "message" => "Success."
+            "message" => "{$this->model} successfuly removed."
         );
         return response()->json($response, $this->base_service->status);
     }

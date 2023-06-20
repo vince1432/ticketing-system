@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Contract\UserRepositoryInterface;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
@@ -34,7 +33,8 @@ class UserRepository implements UserRepositoryInterface
 
     public function update($user_data, $user_id)
     {
-        $user = User::find($user_id);
+        $user = User::select('id', 'name', 'email', 'created_at', 'updated_at')
+                    ->where('id', $user_id)->first();
         if(Arr::exists($user_data, 'name'))
             $user->name = $user_data['name'];
         if(Arr::exists($user_data, 'email'))
@@ -49,7 +49,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function delete($user_id)
     {
-        return User::find($user_id)->delete();
+        return User::where('id', $user_id)->delete();
     }
 
 
