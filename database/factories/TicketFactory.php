@@ -23,7 +23,6 @@ class TicketFactory extends Factory
         return [
             'title' => fake()->sentence(5),
             'summary' => fake()->paragraph(3),
-            'email' => fake()->email(),
             'priority_id' => TicketPrioty::all(['id'])->random(),
             'assigned_to' => User::all(['id'])->random(),
             'closed_at' => NULL,
