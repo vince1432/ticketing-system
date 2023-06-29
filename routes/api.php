@@ -26,7 +26,7 @@ Route::post('/ticket', [TicketController::class, 'store']);
 // token timeout
 // token abilities
 // refresh token
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::apiResource('/user', UserController::class);
     Route::prefix('/ticket/comment')->group(function () {

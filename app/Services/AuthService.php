@@ -35,8 +35,8 @@ class AuthService implements AuthServiceInterface
             $user->update();
         }
 
-        $token = $user->createToken("Token of " . $user->name)->plainTextToken;
-        $refresh_token = $user->createToken("Token of " . $user->name)->plainTextToken;
+        $token = $user->createToken("Token of " . $user->name)->accessToken;
+        $refresh_token = $user->createToken("Token of " . $user->name)->accessToken;
 
         return array(
             "user" => $user->toArray(),
