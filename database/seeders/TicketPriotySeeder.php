@@ -17,7 +17,7 @@ class TicketPriotySeeder extends Seeder
     {
         $data = [
             ['level' => 1, 'name' => 'Low'],
-            ['level' => 2, 'name' => 'Medium'],
+            ['level' => 2, 'name' => 'Moderate'],
             ['level' => 3, 'name' => 'High'],
             ['level' => 4, 'name' => 'Highest']
         ];
