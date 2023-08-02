@@ -11,15 +11,17 @@ class TicketRepository implements TicketRepositoryInterface
 {
     public function all($count = 10)
     {
-        return Ticket::select('id', 'title', 'summary', 'resolution', 'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
-                ->with('assignedTo', 'closedBy')
+        return Ticket::select('id', 'title', 'summary', 'resolution', 'priority_id',
+                'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
+                ->with('priority', 'assignedTo', 'closedBy')
                 ->paginate($count);
     }
 
     public function get($id)
     {
-        return Ticket::select('id', 'title', 'summary', 'resolution', 'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
-                ->with('assignedTo', 'closedBy')
+        return Ticket::select('id', 'title', 'summary', 'resolution', 'priority_id',
+                'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
+                ->with('priority', 'assignedTo', 'closedBy')
                 ->where('id', $id)->first();
     }
 

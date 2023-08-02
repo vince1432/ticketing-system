@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -46,5 +47,10 @@ class Ticket extends Model
     public function closedBy(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'closed_by')->select('id', 'name');
+    }
+
+    public function priority(): BelongsTo
+    {
+        return $this->belongsTo(TicketPrioty::class)->select('id', 'name');
     }
 }
