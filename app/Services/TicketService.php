@@ -40,6 +40,7 @@ class TicketService implements TicketServiceInterface
         $validated = $request->validate([
             'title' => 'required|max:255',
             'summary' => 'required|min:1|max:1000',
+            'status_id' => 'required|exists:ticket_statuses,id',
             'priority_id' => 'required|exists:ticket_prioties,id',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
@@ -54,6 +55,7 @@ class TicketService implements TicketServiceInterface
         $validated = $request->validate([
             'title' => 'nullable|max:255',
             'summary' => 'nullable|min:1|max:1000',
+            'status_id' => 'required|exists:ticket_statuses,id',
             'priority_id' => 'nullable|exists:ticket_prioties,id',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
@@ -75,15 +77,16 @@ class TicketService implements TicketServiceInterface
     }
 
     public function close($request, $id) {
-        $validated = $request->validate([
-            'resolution' => 'required|min:1|max:1000',
-        ]);
+        // $validated = $request->validate([
+        //     'resolution' => 'required|min:1|max:1000',
+        // ]);
 
         if(!$this->ticket_repository->exist($id)) {
             $this->status = 404;
             return array();
         }
 
+        $validated = array();
         $validated['closed_by'] = auth()->user()->id;
         $validated['closed_at'] = Carbon::now();
 

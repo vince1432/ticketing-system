@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Contract\TicketPriorityServiceInterface;
-use Illuminate\Http\Request;
 
 class TicketPriorityController extends BaseController
 {

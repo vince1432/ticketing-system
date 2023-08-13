@@ -53,4 +53,9 @@ class Ticket extends Model
     {
         return $this->belongsTo(TicketPrioty::class)->select('id', 'name');
     }
+
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(TicketStatus::class)->select('id', 'name');
+    }
 }

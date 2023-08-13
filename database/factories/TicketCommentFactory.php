@@ -24,7 +24,9 @@ class TicketCommentFactory extends Factory
         return [
             'ticket_id' => Ticket::factory(),
             'commenter_id' => User::all(['id'])->random(),
-            'comment' => fake()->paragraph(4)
+            'commenter_id' => User::all(['id'])->random(),
+            'comment' => fake()->paragraph(4),
+            'created_at' => fake()->date(),
         ];
     }
 }

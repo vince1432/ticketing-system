@@ -4,7 +4,9 @@ namespace Database\Factories;
 
 use App\Models\Ticket;
 use App\Models\TicketPrioty;
+use App\Models\TicketStatus;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,7 +26,9 @@ class TicketFactory extends Factory
             'title' => fake()->sentence(5),
             'summary' => fake()->paragraph(3),
             'priority_id' => TicketPrioty::all(['id'])->random(),
+            'status_id' => TicketStatus::all(['id'])->random(),
             'assigned_to' => User::all(['id'])->random(),
+            'created_at' => fake()->date(),
             'closed_at' => NULL,
             'closed_by' => NULL,
             'resolution' => fake()->paragraph(3),

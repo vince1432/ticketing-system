@@ -11,17 +11,17 @@ class TicketRepository implements TicketRepositoryInterface
 {
     public function all($count = 10)
     {
-        return Ticket::select('id', 'title', 'summary', 'resolution', 'priority_id',
+        return Ticket::select('id', 'title', 'summary', 'resolution', 'status_id', 'priority_id',
                 'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
-                ->with('priority', 'assignedTo', 'closedBy')
+                ->with('priority', 'assignedTo', 'closedBy', 'status')
                 ->paginate($count);
     }
 
     public function get($id)
     {
-        return Ticket::select('id', 'title', 'summary', 'resolution', 'priority_id',
+        return Ticket::select('id', 'title', 'summary', 'resolution', 'status_id', 'priority_id',
                 'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
-                ->with('priority', 'assignedTo', 'closedBy')
+                ->with('priority', 'assignedTo', 'closedBy', 'status')
                 ->where('id', $id)->first();
     }
 
@@ -31,6 +31,7 @@ class TicketRepository implements TicketRepositoryInterface
             "title" => $data["title"],
             "assigned_to" => $data["assigned_to"],
             "priority_id" => $data["priority_id"],
+            "status_id" => $data["status_id"],
             "summary" => $data["summary"]
         ]);
 
@@ -39,7 +40,7 @@ class TicketRepository implements TicketRepositoryInterface
 
     public function update($data, $id)
     {
-        $ticket = Ticket::select('id', 'title', 'summary', 'priority_id',
+        $ticket = Ticket::select('id', 'title', 'summary', 'status_id', 'priority_id',
                     'assigned_to', 'resolution', 'closed_by', 'closed_at')
                     ->where('id', $id)->first();
         if(Arr::exists($data, 'title'))
@@ -48,6 +49,8 @@ class TicketRepository implements TicketRepositoryInterface
             $ticket->summary = $data['summary'];
         if(Arr::exists($data, 'priority_id'))
             $ticket->priority_id = $data['priority_id'];
+        if(Arr::exists($data, 'status_id'))
+            $ticket->status_id = $data['status_id'];
         if(Arr::exists($data, 'assigned_to'))
             $ticket->assigned_to = $data['assigned_to'];
         if(Arr::exists($data, 'resolution'))

@@ -42,9 +42,9 @@ class TicketPriorityService implements TicketPriorityServiceInterface
             'name' => 'required|min:1|max:15|unique:ticket_prioties|name',
         ]);
 
-        $new_ticket = $this->ticket_priority_repository->insert($validated);
+        $new_ticket_priority = $this->ticket_priority_repository->insert($validated);
 
-        return $new_ticket->toArray();
+        return $new_ticket_priority->toArray();
     }
 
     public function update($request, $id)

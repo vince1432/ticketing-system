@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('summary');
             $table->foreignId('priority_id')->nullable()->constrained('ticket_prioties');
+            $table->foreignId('status_id')->nullable()->constrained('ticket_statuses');
             $table->foreignId('assigned_to')->nullable()->constrained('users');
             $table->timestamp('closed_at')->nullable();
             $table->foreignId('closed_by')->nullable()->constrained('users');

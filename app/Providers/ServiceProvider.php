@@ -9,8 +9,10 @@ use App\Contract\UserServiceInterface;
 use App\Services\UserService;
 use App\Contract\AuthServiceInterface;
 use App\Contract\TicketPriorityServiceInterface;
+use App\Contract\TicketStatusServiceInterface;
 use App\Services\AuthService;
 use App\Services\TicketPriorityService;
+use App\Services\TicketStatusService;
 
 class ServiceProvider extends LaravelServiceProvider
 {
@@ -25,6 +27,7 @@ class ServiceProvider extends LaravelServiceProvider
         $this->app->bind(UserServiceInterface::class, UserService::class);
         $this->app->bind(AuthServiceInterface::class, AuthService::class);
         $this->app->bind(TicketPriorityServiceInterface::class, TicketPriorityService::class);
+        $this->app->bind(TicketStatusServiceInterface::class, TicketStatusService::class);
     }
 
     /**
