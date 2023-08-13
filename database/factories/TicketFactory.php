@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Module;
 use App\Models\Ticket;
 use App\Models\TicketPrioty;
 use App\Models\TicketStatus;
@@ -27,6 +28,7 @@ class TicketFactory extends Factory
             'summary' => fake()->paragraph(3),
             'priority_id' => TicketPrioty::all(['id'])->random(),
             'status_id' => TicketStatus::all(['id'])->random(),
+            'module_id' => Module::all(['id'])->random(),
             'assigned_to' => User::all(['id'])->random(),
             'created_at' => fake()->date(),
             'closed_at' => NULL,

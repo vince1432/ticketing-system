@@ -58,4 +58,9 @@ class Ticket extends Model
     {
         return $this->belongsTo(TicketStatus::class)->select('id', 'name');
     }
+
+    public function module(): BelongsTo
+    {
+        return $this->belongsTo(Module::class)->select('id', 'name', 'description');
+    }
 }

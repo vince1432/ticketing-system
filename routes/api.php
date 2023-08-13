@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketPriorityController;
 use App\Http\Controllers\TicketStatusController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,11 +38,13 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/{ticket}', [TicketController::class, 'removeComment']);
         Route::post('/', [TicketController::class, 'addComment']);
     });
+
     Route::patch('/ticket/close/{ticket}', [TicketController::class, 'close']);
     Route::apiResource('/ticket', TicketController::class)->except('store', 'destroy');
 
     Route::get('/ticket-priority', [TicketPriorityController::class, 'index']);
     Route::apiResource('/ticket-status', TicketStatusController::class);
+    Route::apiResource('/module', ModuleController::class);
 });
 // Route::post('/tokens/create', function (Request $request) {
 //     $token = $request->user()->createToken($request->token_name);

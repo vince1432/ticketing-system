@@ -42,6 +42,7 @@ class TicketService implements TicketServiceInterface
             'summary' => 'required|min:1|max:1000',
             'status_id' => 'required|exists:ticket_statuses,id',
             'priority_id' => 'required|exists:ticket_prioties,id',
+            'module_id' => 'nullable|exists:modules,id',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
 
@@ -57,6 +58,7 @@ class TicketService implements TicketServiceInterface
             'summary' => 'nullable|min:1|max:1000',
             'status_id' => 'required|exists:ticket_statuses,id',
             'priority_id' => 'nullable|exists:ticket_prioties,id',
+            'module_id' => 'nullable|exists:modules,id',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
 

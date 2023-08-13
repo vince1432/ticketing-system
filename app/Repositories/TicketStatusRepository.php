@@ -31,15 +31,15 @@ class TicketStatusRepository implements TicketStatusRepositoryInterface
 
     public function update($data, $id)
     {
-        $ticket_priority = TicketStatus::select('id', 'name')
+        $status = TicketStatus::select('id', 'name')
                     ->where('id', $id)->first();
 
         if(Arr::exists($data, 'name'))
-            $ticket_priority->name = $data['name'];
+            $status->name = $data['name'];
 
-        $ticket_priority->update();
+        $status->update();
 
-        return $ticket_priority;
+        return $status;
     }
 
     public function delete($id)
