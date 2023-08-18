@@ -8,10 +8,11 @@ use Illuminate\Support\Arr;
 
 class TicketStatusRepository implements TicketStatusRepositoryInterface
 {
-    public function all($count = 10)
+    public function all($count = 0)
     {
-        return TicketStatus::select('id', 'name')
-                ->paginate($count);
+        $statuses = TicketStatus::select('id', 'name');
+        $statuses = ($count) ? $statuses->paginate($count) : $statuses->get();
+        return $statuses;
     }
 
     public function get($id)

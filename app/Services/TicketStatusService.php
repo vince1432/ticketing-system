@@ -15,7 +15,7 @@ class TicketStatusService implements TicketStatusServiceInterface
         $this->ticket_status_repository = $ticket_status_repository;
     }
 
-    public function index($count = 10)
+    public function index($count = 0)
     {
         $data = $this->ticket_status_repository->all($count);
         return $data->toArray();

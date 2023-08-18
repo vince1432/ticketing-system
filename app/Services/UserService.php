@@ -15,7 +15,7 @@ class UserService implements UserServiceInterface
         $this->user_repository = $user_repository;
     }
 
-    public function index($count = 10)
+    public function index($count = 0)
     {
         $data = $this->user_repository->all($count);
         return $data->toArray();

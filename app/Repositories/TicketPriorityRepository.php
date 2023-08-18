@@ -10,10 +10,11 @@ use Illuminate\Support\Arr;
 
 class TicketPriorityRepository implements TicketPriorityRepositoryInterface
 {
-    public function all($count = 10)
+    public function all($count = 0)
     {
-        return TicketPrioty::select('id', 'level', 'name')
-                ->paginate($count);
+        $priorities = TicketPrioty::select('id', 'level', 'name');
+        $priorities = ($count) ? $priorities->paginate($count) : $priorities->get();
+        return $priorities;
     }
 
     public function get($id)

@@ -17,7 +17,7 @@ class TicketService implements TicketServiceInterface
         $this->ticket_repository = $ticket_repository;
     }
 
-    public function index($count = 10)
+    public function index($count = 0)
     {
         $data = $this->ticket_repository->all($count);
         return $data->toArray();

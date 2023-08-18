@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 interface BaseServiceInterface
 {
-    public function index($count = 10);
+    public function index($count = 0);
 
     public function show($id);
 

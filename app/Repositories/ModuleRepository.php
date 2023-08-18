@@ -8,10 +8,11 @@ use Illuminate\Support\Arr;
 
 class ModuleRepository implements ModuleRepositoryInterface
 {
-    public function all($count = 10)
+    public function all($count = 0)
     {
-        return Module::select('id', 'name', 'description')
-                ->paginate($count);
+        $modules = Module::select('id', 'name', 'description');
+        $modules = ($count) ? $modules->paginate($count) : $modules->get();
+        return $modules;
     }
 
     public function get($id)

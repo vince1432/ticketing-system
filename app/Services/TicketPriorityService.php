@@ -17,7 +17,7 @@ class TicketPriorityService implements TicketPriorityServiceInterface
         $this->ticket_priority_repository = $ticket_priority_repository;
     }
 
-    public function index($count = 10)
+    public function index($count = 0)
     {
         $data = $this->ticket_priority_repository->all($count);
         return $data->toArray();

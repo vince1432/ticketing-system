@@ -9,12 +9,13 @@ use Illuminate\Support\Arr;
 
 class TicketRepository implements TicketRepositoryInterface
 {
-    public function all($count = 10)
+    public function all($count = 0)
     {
-        return Ticket::select('id', 'title', 'summary', 'resolution', 'status_id', 'priority_id',
-                'module_id', 'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
-                ->with('priority', 'assignedTo', 'closedBy', 'status', 'module')
-                ->paginate($count);
+        $tickets = Ticket::select('id', 'title', 'summary', 'resolution', 'status_id', 'priority_id',
+                    'module_id', 'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
+                    ->with('priority', 'assignedTo', 'closedBy', 'status', 'module');
+        $tickets = ($count) ? $tickets->paginate($count) : $tickets->get();
+        return $tickets;
     }
 
     public function get($id)

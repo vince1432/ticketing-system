@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contract\ModuleRepositoryInterface;
 use App\Contract\ModuleServiceInterface;
+use Illuminate\Http\Request;
 
 class ModuleService implements ModuleServiceInterface
 {
@@ -15,7 +16,7 @@ class ModuleService implements ModuleServiceInterface
         $this->module_repository = $module_repository;
     }
 
-    public function index($count = 10)
+    public function index($count = 0)
     {
         $data = $this->module_repository->all($count);
         return $data->toArray();
@@ -33,7 +34,7 @@ class ModuleService implements ModuleServiceInterface
         return $ticket->toArray();
     }
 
-    public function store($request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|min:1|max:15|unique:ticket_statuses,name',
