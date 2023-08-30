@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function all($count = 0)
+    public function all($count = 0, $filters = [])
     {
         $users = User::select('id', 'name', 'email', 'created_at', 'updated_at');
         $users = ($count) ? $users->paginate($count) : $users->get();

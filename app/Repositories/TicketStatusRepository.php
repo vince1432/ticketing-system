@@ -8,7 +8,7 @@ use Illuminate\Support\Arr;
 
 class TicketStatusRepository implements TicketStatusRepositoryInterface
 {
-    public function all($count = 0)
+    public function all($count = 0, $filters = [])
     {
         $statuses = TicketStatus::select('id', 'name');
         $statuses = ($count) ? $statuses->paginate($count) : $statuses->get();

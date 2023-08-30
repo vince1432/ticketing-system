@@ -8,7 +8,7 @@ use Illuminate\Support\Arr;
 
 class ModuleRepository implements ModuleRepositoryInterface
 {
-    public function all($count = 0)
+    public function all($count = 0, $filters = [])
     {
         $modules = Module::select('id', 'name', 'description');
         $modules = ($count) ? $modules->paginate($count) : $modules->get();

@@ -4,7 +4,7 @@ namespace App\Contract;
 
 interface BaseRepositoryInterface
 {
-    public function all($count = 0);
+    public function all($count = 0, $filters = []);
 
     public function get($id);
 

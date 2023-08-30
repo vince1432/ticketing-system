@@ -19,7 +19,26 @@ class TicketService implements TicketServiceInterface
 
     public function index($count = 0)
     {
-        $data = $this->ticket_repository->all($count);
+        $query_params = request()->query();
+        $filters = [];
+
+        // filter params
+        if(isset($query_params['search']))
+            $filters['search'] = $query_params['search'];
+        if(isset($query_params['module']))
+            $filters['module'] = $query_params['module'];
+        if(isset($query_params['priority']))
+            $filters['priority'] = $query_params['priority'];
+        if(isset($query_params['status']))
+            $filters['status'] = $query_params['status'];
+        if(isset($query_params['assigned']))
+            $filters['assigned'] = $query_params['assigned'];
+        if(isset($query_params['start_date']))
+            $filters['start_date'] = $query_params['start_date'];
+        if(isset($query_params['end_date']))
+            $filters['end_date'] =  $query_params['end_date'];
+
+        $data = $this->ticket_repository->all($count, $filters);
         return $data->toArray();
     }
 

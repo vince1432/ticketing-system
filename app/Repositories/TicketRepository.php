@@ -9,11 +9,32 @@ use Illuminate\Support\Arr;
 
 class TicketRepository implements TicketRepositoryInterface
 {
-    public function all($count = 0)
+    public function all($count = 0, $filters = [])
     {
         $tickets = Ticket::select('id', 'title', 'summary', 'resolution', 'status_id', 'priority_id',
                     'module_id', 'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
                     ->with('priority', 'assignedTo', 'closedBy', 'status', 'module');
+
+        // add filter
+        if(Arr::exists($filters, 'search'))
+            $tickets = $tickets->where(function ($query) use ($filters) {
+                $query->where('title', 'LIKE', '%' . $filters['search'] . '%')
+                      ->orWhere('summary', 'LIKE', '%' . $filters['search'] . '%')
+                      ->orWhere('id', '=', $filters['search']);
+            });
+        if(Arr::exists($filters, 'module'))
+            $tickets = $tickets->where('module_id', $filters['module']);
+        if(Arr::exists($filters, 'priority'))
+            $tickets = $tickets->where('priority_id', $filters['priority']);
+        if(Arr::exists($filters, 'status'))
+            $tickets = $tickets->where('status_id', $filters['status']);
+        if(Arr::exists($filters, 'assigned'))
+            $tickets = $tickets->where('assigned_to', $filters['assigned']);
+        if(Arr::exists($filters, 'start_date'))
+            $tickets = $tickets->where('created_at', '>=', $filters['start_date']);
+        if(Arr::exists($filters, 'end_date'))
+            $tickets = $tickets->where('created_at', '<=', $filters['end_date']);
+
         $tickets = ($count) ? $tickets->paginate($count) : $tickets->get();
         return $tickets;
     }
