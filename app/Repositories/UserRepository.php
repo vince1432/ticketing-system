@@ -9,9 +9,19 @@ use Illuminate\Support\Facades\Hash;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function all($count = 0, $filters = [])
+    /**
+     * user list
+     *
+     * @param  integer $count item count to return
+     * @param  array $filters (optional) for search
+     * @param  string $col (optional) column name for order
+     * @param  string $dir (optional) order direction
+     * @return Illuminate\Database\Eloquent\Collection User list
+     */
+    public function all($count = 0, $filters = [], $col = 'id', $dir = 'asc')
     {
-        $users = User::select('id', 'name', 'email', 'created_at', 'updated_at');
+        $users = User::select('id', 'name', 'email', 'created_at', 'updated_at')
+                    ->orderBy($col, $dir);
         $users = ($count) ? $users->paginate($count) : $users->get();
         return $users;
     }

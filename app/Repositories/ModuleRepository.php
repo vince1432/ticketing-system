@@ -8,10 +8,23 @@ use Illuminate\Support\Arr;
 
 class ModuleRepository implements ModuleRepositoryInterface
 {
-    public function all($count = 0, $filters = [])
+    /**
+     * module list
+     *
+     * @param  integer $count item count to return
+     * @param  array $filters (optional) for search
+     * @param  string $col (optional) column name for order
+     * @param  string $dir (optional) order direction
+     * @return Illuminate\Database\Eloquent\Collection Module list
+     */
+    public function all($count = 0, $filters = [], $col = 'id', $dir = 'asc')
     {
-        $modules = Module::select('id', 'name', 'description');
-        $modules = ($count) ? $modules->paginate($count) : $modules->get();
+        $modules = Module::select('id', 'name', 'description')
+                    ->orderBy($col, $dir);
+        $modules = ($count)
+            ? $modules->paginate($count)
+            : $modules->get();
+
         return $modules;
     }
 

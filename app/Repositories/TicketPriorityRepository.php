@@ -10,9 +10,19 @@ use Illuminate\Support\Arr;
 
 class TicketPriorityRepository implements TicketPriorityRepositoryInterface
 {
-    public function all($count = 0, $filters = [])
+    /**
+     * ticket priority list
+     *
+     * @param  integer $count item count to return
+     * @param  array $filters (optional) for search
+     * @param  string $col (optional) column name for order
+     * @param  string $dir (optional) order direction
+     * @return Illuminate\Database\Eloquent\Collection Ticket Priority list
+     */
+    public function all($count = 0, $filters = [], $col = 'id', $dir = 'asc')
     {
-        $priorities = TicketPrioty::select('id', 'level', 'name');
+        $priorities = TicketPrioty::select('id', 'level', 'name')
+                        ->orderBy($col, $dir);
         $priorities = ($count) ? $priorities->paginate($count) : $priorities->get();
         return $priorities;
     }

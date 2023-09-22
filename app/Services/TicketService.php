@@ -21,6 +21,8 @@ class TicketService implements TicketServiceInterface
     {
         $query_params = request()->query();
         $filters = [];
+        $sort_by = 'id';
+        $sort_dir = 'asc';
 
         // filter params
         if(isset($query_params['search']))
@@ -38,7 +40,13 @@ class TicketService implements TicketServiceInterface
         if(isset($query_params['end_date']))
             $filters['end_date'] =  $query_params['end_date'];
 
-        $data = $this->ticket_repository->all($count, $filters);
+        // sorting
+        if(isset($query_params['sort_by']))
+            $sort_by = $query_params['sort_by'];
+        if(isset($query_params['sort_dir']))
+            $sort_dir = $query_params['sort_dir'];
+
+        $data = $this->ticket_repository->all($count, $filters, $sort_by, $sort_dir);
         return $data->toArray();
     }
 
@@ -120,12 +128,20 @@ class TicketService implements TicketServiceInterface
     {
         $query_params = request()->query();
         $item_count = $query_params['item_count'] ?? 0;
+        $sort_by = 'id';
+        $sort_dir = 'asc';
 
         $validated = $request->validate([
             'ticket_id' => 'required|exists:tickets,id'
         ]);
 
-        $data = $this->ticket_repository->comments($validated['ticket_id'], $item_count);
+        // sorting
+        if(isset($query_params['sort_by']))
+            $sort_by = $query_params['sort_by'];
+        if(isset($query_params['sort_dir']))
+            $sort_dir = $query_params['sort_dir'];
+
+        $data = $this->ticket_repository->comments($validated['ticket_id'], $item_count, $sort_by, $sort_dir);
 
         return $data->toArray();
     }

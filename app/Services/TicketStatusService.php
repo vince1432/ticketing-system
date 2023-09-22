@@ -17,7 +17,17 @@ class TicketStatusService implements TicketStatusServiceInterface
 
     public function index($count = 0)
     {
-        $data = $this->ticket_status_repository->all($count);
+        $query_params = request()->query();
+        $sort_by = 'id';
+        $sort_dir = 'asc';
+
+        // sorting
+        if(isset($query_params['sort_by']))
+            $sort_by = $query_params['sort_by'];
+        if(isset($query_params['sort_dir']))
+            $sort_dir = $query_params['sort_dir'];
+
+        $data = $this->ticket_status_repository->all($count, [], $sort_by, $sort_dir);
         return $data->toArray();
     }
 

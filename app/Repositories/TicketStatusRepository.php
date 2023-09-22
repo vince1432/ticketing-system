@@ -8,9 +8,19 @@ use Illuminate\Support\Arr;
 
 class TicketStatusRepository implements TicketStatusRepositoryInterface
 {
-    public function all($count = 0, $filters = [])
+    /**
+     * ticket status list
+     *
+     * @param  integer $count item count to return
+     * @param  array $filters (optional) for search
+     * @param  string $col (optional) column name for order
+     * @param  string $dir (optional) order direction
+     * @return Illuminate\Database\Eloquent\Collection Ticket Status list
+     */
+    public function all($count = 0, $filters = [], $col = 'id', $dir = 'asc')
     {
-        $statuses = TicketStatus::select('id', 'name');
+        $statuses = TicketStatus::select('id', 'name')
+                        ->orderBy($col, $dir);
         $statuses = ($count) ? $statuses->paginate($count) : $statuses->get();
         return $statuses;
     }

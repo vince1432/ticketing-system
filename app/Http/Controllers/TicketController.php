@@ -43,18 +43,9 @@ class TicketController extends BaseController
 
     public function comments(Request $reqquest)
     {
-        $comments = $this->ticket_service->comments($reqquest);
-        if ($this->ticket_service->status === 404)
-            $response = array(
-                "status" => "Not found",
-                "message" => "Comment not found."
-            );
-        else
-            $response = array(
-                "status" => "Success",
-                "message" => "Success.",
-                "data" => $comments
-            );
+        $response = $this->ticket_service->comments($reqquest);
+        $response["status"] = "Success";
+        $response["message"] = "Success.";
 
         return response()->json($response, $this->ticket_service->status);
     }

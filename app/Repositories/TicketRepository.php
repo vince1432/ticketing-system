@@ -9,11 +9,21 @@ use Illuminate\Support\Arr;
 
 class TicketRepository implements TicketRepositoryInterface
 {
-    public function all($count = 0, $filters = [])
+    /**
+     * return a ticket list
+     *
+     * @param  integer $count item count to return
+     * @param  array $filters (optional) for search
+     * @param  string $col (optional) column name for order
+     * @param  string $dir (optional) order direction
+     * @return Illuminate\Database\Eloquent\Collection Ticket list
+     */
+    public function all($count = 0, $filters = [], $col = 'id', $dir = 'asc')
     {
         $tickets = Ticket::select('id', 'title', 'summary', 'resolution', 'status_id', 'priority_id',
                     'module_id', 'assigned_to', 'closed_by', 'closed_at', 'created_at', 'updated_at')
-                    ->with('priority', 'assignedTo', 'closedBy', 'status', 'module');
+                    ->with('priority', 'assignedTo', 'closedBy', 'status', 'module')
+                    ->orderBy($col, $dir);
 
         // add filter
         if(Arr::exists($filters, 'search'))
@@ -115,11 +125,21 @@ class TicketRepository implements TicketRepositoryInterface
         return Ticket::select('id')->where('id', $id)->exists();
     }
 
-    public function comments($ticket_id, $count = 0)
+    /**
+     * return a ticket comment list
+     *
+     * @param  integer $ticket_id ticket id
+     * @param  integer $count (optional) item count to return
+     * @param  string $col (optional) column name for order
+     * @param  string $dir (optional) order direction
+     * @return Illuminate\Database\Eloquent\Collection Comment list
+     */
+    public function comments($ticket_id, $count = 0, $col = 'id', $dir = 'asc')
     {
         $comments = TicketComment::select('id', 'ticket_id', 'commenter_id', 'comment', 'created_at')
         ->with('commenter')
-        ->where('ticket_id', $ticket_id);
+        ->where('ticket_id', $ticket_id)
+        ->orderBy($col, $dir);
 
         $comments = ($count)
             ? $comments->paginate($count)
