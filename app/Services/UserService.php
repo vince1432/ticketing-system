@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Contract\UserRepositoryInterface;
 use App\Contract\UserServiceInterface;
+use Illuminate\Support\Facades\Storage;
+use Image;
 
 class UserService implements UserServiceInterface
 {
@@ -17,7 +19,22 @@ class UserService implements UserServiceInterface
 
     public function index($count = 0)
     {
-        $data = $this->user_repository->all($count);
+        $query_params = request()->query();
+        $filters = [];
+        $sort_by = 'id';
+        $sort_dir = 'asc';
+
+        // filter params
+        if(isset($query_params['search']))
+            $filters['search'] = $query_params['search'];
+
+         // sorting
+        if(isset($query_params['sort_by']))
+            $sort_by = $query_params['sort_by'];
+        if(isset($query_params['sort_dir']))
+            $sort_dir = $query_params['sort_dir'];
+
+        $data = $this->user_repository->all($count, $filters, $sort_by, $sort_dir);
         return $data->toArray();
     }
 
@@ -42,7 +59,7 @@ class UserService implements UserServiceInterface
 
         $new_user = $this->user_repository->insert($validated);
 
-        $token = $new_user->createToken("Token of " . $new_user["name"])->plainTextToken;
+        $token = $new_user->createToken("Token of " . $new_user["name"])->accessToken;
 
         $response = array(
             "user" => $new_user->toArray(),

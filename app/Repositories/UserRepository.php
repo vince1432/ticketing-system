@@ -22,6 +22,15 @@ class UserRepository implements UserRepositoryInterface
     {
         $users = User::select('id', 'name', 'email', 'created_at', 'updated_at')
                     ->orderBy($col, $dir);
+
+        // add filter
+        if(Arr::exists($filters, 'search'))
+            $users = $users->where(function ($query) use ($filters) {
+                $query->where('name', 'LIKE', '%' . $filters['search'] . '%')
+                      ->orWhere('email', 'LIKE', '%' . $filters['search'] . '%')
+                      ->orWhere('id', '=', $filters['search']);
+            });
+
         $users = ($count) ? $users->paginate($count) : $users->get();
         return $users;
     }
