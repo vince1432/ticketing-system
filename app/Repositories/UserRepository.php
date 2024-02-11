@@ -35,10 +35,17 @@ class UserRepository implements UserRepositoryInterface
         return $users;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param integer $id
+     * @return User
+     */
     public function get($id)
     {
         return User::select('id', 'name', 'email', 'created_at', 'updated_at')
-            ->where('id', $id)->first();
+                ->with('fileable')
+                ->where('id', $id)->first();
     }
 
     public function insert($user_data)

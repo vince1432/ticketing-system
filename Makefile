@@ -1,6 +1,7 @@
 setup:
 	@make db-set
 	@make link
+	@make passport-install
 docker-setup:
 	@make build
 	@make up
@@ -12,6 +13,8 @@ db-set:
 	docker exec -it ticketing-backend bash -c "php artisan migrate --seed"
 migrate-fresh:
 	docker exec -it ticketing-backend bash -c "php artisan migrate:fresh --seed"
+migrate:
+	docker exec -it ticketing-backend bash -c "php artisan migrate --seed"
 seed:
 	docker exec -it ticketing-backend bash -c "php artisan db:seed"
 passport-install:
@@ -32,3 +35,5 @@ down:
 	docker-compose down -v
 up:
 	docker-compose up -d
+docker-open:
+	docker exec -it ticketing-backend bash

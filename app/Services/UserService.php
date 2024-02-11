@@ -2,19 +2,23 @@
 
 namespace App\Services;
 
+use App\Contract\FileServiceInterface;
 use App\Contract\UserRepositoryInterface;
 use App\Contract\UserServiceInterface;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Image;
 
 class UserService implements UserServiceInterface
 {
     private $user_repository;
+    private $file_repository;
     // response status
     public $status = 200;
 
-    public function __construct( UserRepositoryInterface $user_repository) {
+    public function __construct( UserRepositoryInterface $user_repository, FileServiceInterface $file_repository) {
         $this->user_repository = $user_repository;
+        $this->file_repository = $file_repository;
     }
 
     public function index($count = 0)
@@ -50,21 +54,29 @@ class UserService implements UserServiceInterface
         return $user->toArray();
     }
 
-    public function store($request) {
+    public function store(Request $request) : array {
         $validated = $request->validate([
             'name' => 'max:255',
             'email' => 'required|unique:users,email|max:255|email',
             'password' => 'required|min:6|max:50|confirmed',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg',
         ]);
+
+        $response = [];
 
         $new_user = $this->user_repository->insert($validated);
 
-        $token = $new_user->createToken("Token of " . $new_user["name"])->accessToken;
+        if($new_user->id) {
+            $token = $new_user->createToken("Token of " . $new_user["name"])->accessToken;
 
-        $response = array(
-            "user" => $new_user->toArray(),
-            "token" => $token
-        );
+            $response["user"] = $new_user->toArray();
+            $response["token"] = $token;
+
+            if(array_key_exists('image', $validated) && $validated['image']) {
+                $file = $this->file_repository->store($validated['image'], $new_user);
+                $response["user"]["image"] = $file['url'];
+            }
+        }
 
         return $response;
     }

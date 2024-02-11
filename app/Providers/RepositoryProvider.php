@@ -8,10 +8,12 @@ use Illuminate\Support\ServiceProvider;
 use App\Contract\UserRepositoryInterface;
 use App\Repositories\UserRepository;
 use App\Contract\AuthRepositoryInterface;
+use App\Contract\FileRepositoryInterface;
 use App\Contract\ModuleRepositoryInterface;
 use App\Contract\TicketPriorityRepositoryInterface;
 use App\Contract\TicketStatusRepositoryInterface;
 use App\Repositories\AuthRepository;
+use App\Repositories\FileRepository;
 use App\Repositories\ModuleRepository;
 use App\Repositories\TicketPriorityRepository;
 use App\Repositories\TicketStatusRepository;
@@ -31,6 +33,7 @@ class RepositoryProvider extends ServiceProvider
         $this->app->bind(TicketPriorityRepositoryInterface::class, TicketPriorityRepository::class);
         $this->app->bind(TicketStatusRepositoryInterface::class, TicketStatusRepository::class);
         $this->app->bind(ModuleRepositoryInterface::class, ModuleRepository::class);
+        $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
     }
 
     /**

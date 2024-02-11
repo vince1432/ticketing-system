@@ -19,7 +19,7 @@ interface BaseRepositoryInterface
      * get record by id
      *
      * @param  integer $id
-     * @return Illuminate\Database\Eloquent\Model
+     * @return object
      */
     public function get($id);
 
@@ -27,7 +27,7 @@ interface BaseRepositoryInterface
      * add new record
      *
      * @param  array $data record data
-     * @return Illuminate\Database\Eloquent\Model
+     * @return object Model Object
      */
     public function insert($data);
 
@@ -36,7 +36,7 @@ interface BaseRepositoryInterface
      *
      * @param  array $data record data
      * @param  integer $id record id
-     * @return Illuminate\Database\Eloquent\Model
+     * @return object
      */
     public function update($data, $id);
 
@@ -44,7 +44,7 @@ interface BaseRepositoryInterface
      * delete
      *
      * @param  integer $id record id
-     * @return Illuminate\Database\Eloquent\Model
+     * @return object
      */
     public function delete($id);
 
