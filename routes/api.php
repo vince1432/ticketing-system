@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketPriorityController;
 use App\Http\Controllers\TicketStatusController;
@@ -45,6 +46,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/ticket-priority', [TicketPriorityController::class, 'index']);
     Route::apiResource('/ticket-status', TicketStatusController::class);
     Route::apiResource('/module', ModuleController::class);
+    Route::apiResource('/role', RoleController::class);
 });
 // Route::post('/tokens/create', function (Request $request) {
 //     $token = $request->user()->createToken($request->token_name);
