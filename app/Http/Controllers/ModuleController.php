@@ -18,7 +18,7 @@ class ModuleController extends BaseController
     public function __construct(ModuleServiceInterface $module_service)
     {
         $this->module_service = $module_service;
-        $this->model = "Module";
+        $this->model_string = "Module";
         // set base controller service
         $this->setService($this->module_service);
     }

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserCollection;
+use App\Constants\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
-    private $base_service;
-    public $model;
+    private object $base_service;
+    public string $model;
+    public string $model_string;
 
     /**
      * set class service
@@ -17,7 +18,7 @@ class BaseController extends Controller
      * @param  ServiceInterface $base_service
      * @return void
      */
-    public function setService(&$base_service,)
+    public function setService(&$base_service)
     {
         $this->base_service =& $base_service;
     }
@@ -29,6 +30,13 @@ class BaseController extends Controller
      */
     public function index()
     {
+        if(request()->user()->cannot('viewAny', $this->model)) {
+            return response()->json([
+                "status" => "Unauthorized",
+                "message" => "You can't access this information."
+            ], 401);
+        }
+
         $query_params = request()->query();
         $item_count = $query_params['item_count'] ?? 10;
 
@@ -47,10 +55,17 @@ class BaseController extends Controller
      */
     public function store(Request $request)
     {
+        if(request()->user()->cannot('viewAny', $this->model)) {
+            return response()->json([
+                "status" => "Unauthorized",
+                "message" => "You can't access this information."
+            ], 401);
+        }
+
         $new_record = $this->base_service->store($request);
         $response = array(
             "status" => "Success",
-            "message" => "{$this->model} successfuly created.",
+            "message" => "{$this->model_string} successfuly created.",
             "data" => $new_record
         );
 
@@ -67,17 +82,26 @@ class BaseController extends Controller
     {
         $data = $this->base_service->show($id);
 
+        // missing model
         if($this->base_service->status === 404)
-            $response = array(
+            $response = [
                 "status" => "Not found",
-                "message" => "{$this->model} not found."
-            );
+                "message" => "{$this->model_string} not found."
+            ];
+        // unauthorize access
+        else if(request()->user()->cannot('view', new User($data))) {
+            $response =[
+                "status" => "Unauthorized",
+                "message" => "You can't access this information."
+            ];
+            $this->base_service->status = 401;
+        }
         else
-            $response = array(
+            $response = [
                 "status" => "Success",
                 "message" => "Success.",
                 "data" => $data
-            );
+            ];
 
         return response()->json($response, $this->base_service->status);
     }
@@ -96,12 +120,12 @@ class BaseController extends Controller
         if ($this->base_service->status === 404)
             $response = array(
                 "status" => "Not found",
-                "message" => "{$this->model} not found."
+                "message" => "{$this->model_string} not found."
             );
         else
             $response = array(
                 "status" => "Success",
-                "message" => "{$this->model} successfuly updated.",
+                "message" => "{$this->model_string} successfuly updated.",
                 "data" => $data
             );
 
@@ -120,7 +144,7 @@ class BaseController extends Controller
 
         $response = array(
             "status" => "Success",
-            "message" => "{$this->model} successfuly removed."
+            "message" => "{$this->model_string} successfuly removed."
         );
         return response()->json($response, $this->base_service->status);
     }

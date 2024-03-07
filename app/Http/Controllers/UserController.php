@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contract\UserServiceInterface;
+use App\Models\User;
 
 class UserController extends BaseController
 {
@@ -17,7 +18,8 @@ class UserController extends BaseController
     public function __construct( UserServiceInterface $user_service)
     {
         $this->user_service = $user_service;
-        $this->model = "User";
+        $this->model = User::class;
+        $this->model_string = "User";
         // set base controller service
         $this->setService($this->user_service);
     }

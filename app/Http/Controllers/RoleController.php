@@ -17,7 +17,7 @@ class RoleController extends BaseController
     public function __construct(RoleServiceInterface $role_service)
     {
         $this->role_service = $role_service;
-        $this->model = "Role";
+        $this->model_string = "Role";
         // set base controller service
         $this->setService($this->role_service);
     }

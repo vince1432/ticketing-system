@@ -17,7 +17,7 @@ class TicketStatusController extends BaseController
     public function __construct(TicketStatusServiceInterface $ticket_status_service)
     {
         $this->ticket_status_service = $ticket_status_service;
-        $this->model = "Ticket Status";
+        $this->model_string = "Ticket Status";
         // set base controller service
         $this->setService($this->ticket_status_service);
     }

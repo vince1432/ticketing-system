@@ -21,6 +21,7 @@ class UserRepository implements UserRepositoryInterface
     public function all($count = 0, $filters = [], $col = 'id', $dir = 'asc')
     {
         $users = User::select('id', 'name', 'email', 'created_at', 'updated_at')
+                    ->with('roles')
                     ->orderBy($col, $dir);
 
         // add filter

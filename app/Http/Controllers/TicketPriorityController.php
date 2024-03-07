@@ -17,7 +17,7 @@ class TicketPriorityController extends BaseController
     public function __construct(TicketPriorityServiceInterface $ticket_priority_service)
     {
         $this->ticket_priority_service = $ticket_priority_service;
-        $this->model = "Ticket Priority";
+        $this->model_string = "Ticket Priority";
         // set base controller service
         $this->setService($this->ticket_priority_service);
     }

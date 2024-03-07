@@ -18,7 +18,7 @@ class TicketController extends BaseController
     public function __construct(TicketServiceInterface $ticket_service)
     {
         $this->ticket_service = $ticket_service;
-        $this->model = "Ticket";
+        $this->model_string = "Ticket";
         // set base controller service
         $this->setService($this->ticket_service);
     }
