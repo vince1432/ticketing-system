@@ -16,7 +16,13 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $data = $this->auth_service->login($request);
+
+        $validated = $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        $data = $this->auth_service->login($validated);
 
         if ($this->auth_service->status === 401)
             $response = array(

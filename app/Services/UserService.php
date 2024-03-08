@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contract\FileServiceInterface;
+use App\Contract\RoleServiceInterface;
 use App\Contract\UserRepositoryInterface;
 use App\Contract\UserServiceInterface;
 use Illuminate\Http\Request;
@@ -13,15 +14,22 @@ class UserService implements UserServiceInterface
 {
     private $user_repository;
     private $file_repository;
+    private $role_repository;
+
     // response status
     public $status = 200;
 
-    public function __construct( UserRepositoryInterface $user_repository, FileServiceInterface $file_repository) {
+    public function __construct(
+        UserRepositoryInterface $user_repository,
+        FileServiceInterface $file_repository,
+        RoleServiceInterface $role_repository
+    ) {
         $this->user_repository = $user_repository;
         $this->file_repository = $file_repository;
+        $this->role_repository = $role_repository;
     }
 
-    public function index($count = 0)
+    public function index(int $count = 0)
     {
         $query_params = request()->query();
         $filters = [];
@@ -54,14 +62,8 @@ class UserService implements UserServiceInterface
         return $user->toArray();
     }
 
-    public function store(Request $request) : array {
-        $validated = $request->validate([
-            'name' => 'max:255',
-            'email' => 'required|unique:users,email|max:255|email',
-            'password' => 'required|min:6|max:50|confirmed',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg',
-        ]);
-
+    public function store(array $validated) : array
+    {
         $response = [];
 
         $new_user = $this->user_repository->insert($validated);
@@ -81,12 +83,8 @@ class UserService implements UserServiceInterface
         return $response;
     }
 
-    public function update($request, $user_id) {
-        $validated = $request->validate([
-            'name' => 'nullable|max:255',
-            'email' => 'nullable|max:255|email|unique:users,email,' . $user_id,
-            'password' => 'nullable|min:6|max:50|confirmed',
-        ]);
+    public function update(array $validated, $user_id)
+    {
 
         if(!$this->user_repository->exist($user_id)) {
             $this->status = 404;

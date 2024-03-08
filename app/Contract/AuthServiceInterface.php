@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 interface AuthServiceInterface
 {
-    public function login(Request $request);
+    public function login(array $request);
 
     public function logout(Request $request);
 

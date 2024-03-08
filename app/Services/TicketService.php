@@ -17,7 +17,7 @@ class TicketService implements TicketServiceInterface
         $this->ticket_repository = $ticket_repository;
     }
 
-    public function index($count = 0)
+    public function index(int $count = 0)
     {
         $query_params = request()->query();
         $filters = [];
@@ -50,7 +50,7 @@ class TicketService implements TicketServiceInterface
         return $data->toArray();
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         if(!$this->ticket_repository->exist($id)) {
             $this->status = 404;
@@ -62,33 +62,15 @@ class TicketService implements TicketServiceInterface
         return $ticket->toArray();
     }
 
-    public function store($request)
+    public function store(array $validated)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'summary' => 'required|min:1|max:1000',
-            'status_id' => 'required|exists:ticket_statuses,id',
-            'priority_id' => 'required|exists:ticket_prioties,id',
-            'module_id' => 'nullable|exists:modules,id',
-            'assigned_to' => 'nullable|exists:users,id',
-        ]);
-
         $new_ticket = $this->ticket_repository->insert($validated);
 
         return $new_ticket->toArray();
     }
 
-    public function update($request, $id)
+    public function update(array $validated, $id)
     {
-        $validated = $request->validate([
-            'title' => 'nullable|max:255',
-            'summary' => 'nullable|min:1|max:1000',
-            'status_id' => 'required|exists:ticket_statuses,id',
-            'priority_id' => 'nullable|exists:ticket_prioties,id',
-            'module_id' => 'nullable|exists:modules,id',
-            'assigned_to' => 'nullable|exists:users,id',
-        ]);
-
         if(!$this->ticket_repository->exist($id)) {
             $this->status = 404;
             return array();
@@ -105,10 +87,7 @@ class TicketService implements TicketServiceInterface
         return $ticket;
     }
 
-    public function close($request, $id) {
-        // $validated = $request->validate([
-        //     'resolution' => 'required|min:1|max:1000',
-        // ]);
+    public function close(array $validated, $id) {
 
         if(!$this->ticket_repository->exist($id)) {
             $this->status = 404;
@@ -124,16 +103,12 @@ class TicketService implements TicketServiceInterface
         return $ticket->toArray();
     }
 
-    public function comments($request)
+    public function comments(array $validated)
     {
         $query_params = request()->query();
         $item_count = $query_params['item_count'] ?? 0;
         $sort_by = 'id';
         $sort_dir = 'asc';
-
-        $validated = $request->validate([
-            'ticket_id' => 'required|exists:tickets,id'
-        ]);
 
         // sorting
         if(isset($query_params['sort_by']))
@@ -158,12 +133,8 @@ class TicketService implements TicketServiceInterface
         return $comment->toArray();
     }
 
-    public function addComment($request) {
-        $validated = $request->validate([
-            'ticket_id' => 'required|exists:tickets,id',
-            'comment' => 'required|min:1|max:1000'
-        ]);
-
+    public function addComment(array $validated)
+    {
         if(!$this->ticket_repository->exist($validated['ticket_id'])) {
             $this->status = 404;
             return array();
@@ -177,11 +148,8 @@ class TicketService implements TicketServiceInterface
         return $comment->toArray();
     }
 
-    public function updateComment($request, $id) {
-        $validated = $request->validate([
-            'comment' => 'required|min:1|max:1000'
-        ]);
-
+    public function updateComment($validated, $id)
+    {
         if(!$this->ticket_repository->commentExist($id)) {
             $this->status = 404;
             return array();

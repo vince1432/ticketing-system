@@ -16,7 +16,7 @@ class ModuleService implements ModuleServiceInterface
         $this->module_repository = $module_repository;
     }
 
-    public function index($count = 0)
+    public function index(int $count = 0)
     {
         $query_params = request()->query();
         $sort_by = 'id';
@@ -44,28 +44,18 @@ class ModuleService implements ModuleServiceInterface
         return $ticket->toArray();
     }
 
-    public function store(Request $request)
+    public function store(array $validated)
     {
-        $validated = $request->validate([
-            'name' => 'required|min:1|max:15|unique:ticket_statuses,name',
-            'description' => 'required|min:1|max:255'
-        ]);
-
         $new_module = $this->module_repository->insert($validated);
 
         return $new_module->toArray();
     }
 
-    public function update($request, $id)
+    public function update($validated, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|min:1|max:15|unique:ticket_statuses,name,' . $id,
-            'description' => 'required|min:1|max:255',
-        ]);
-
         if(!$this->module_repository->exist($id)) {
             $this->status = 404;
-            return array();
+            return [];
         }
 
         $ticket = $this->module_repository->update($validated, $id);

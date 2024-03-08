@@ -6,15 +6,15 @@ use Illuminate\Http\Request;
 
 interface TicketServiceInterface extends BaseServiceInterface
 {
-    public function close(Request $request, $id);
+    public function close(array $validated, $id);
 
-    public function comments(Request $request);
+    public function comments(array $validated);
 
     public function comment($id);
 
-    public function addComment(Request $request);
+    public function addComment(array $validated);
 
-    public function updateComment(Request $request, $id);
+    public function updateComment(array $validated, $id);
 
     public function removeComment($id);
 }

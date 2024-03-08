@@ -15,7 +15,7 @@ class TicketStatusService implements TicketStatusServiceInterface
         $this->ticket_status_repository = $ticket_status_repository;
     }
 
-    public function index($count = 0)
+    public function index(int $count = 0)
     {
         $query_params = request()->query();
         $sort_by = 'id';
@@ -31,7 +31,7 @@ class TicketStatusService implements TicketStatusServiceInterface
         return $data->toArray();
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         if(!$this->ticket_status_repository->exist($id)) {
             $this->status = 404;
@@ -43,23 +43,15 @@ class TicketStatusService implements TicketStatusServiceInterface
         return $ticket->toArray();
     }
 
-    public function store($request)
+    public function store(array $validated)
     {
-        $validated = $request->validate([
-            'name' => 'required|min:1|max:15|unique:ticket_statuses,name'
-        ]);
-
         $new_ticket_status = $this->ticket_status_repository->insert($validated);
 
         return $new_ticket_status->toArray();
     }
 
-    public function update($request, $id)
+    public function update($validated, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|min:1|max:15|unique:ticket_statuses,name,' . $id,
-        ]);
-
         if(!$this->ticket_status_repository->exist($id)) {
             $this->status = 404;
             return array();

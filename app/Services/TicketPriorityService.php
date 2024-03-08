@@ -17,7 +17,7 @@ class TicketPriorityService implements TicketPriorityServiceInterface
         $this->ticket_priority_repository = $ticket_priority_repository;
     }
 
-    public function index($count = 0)
+    public function index(int $count = 0)
     {
         $query_params = request()->query();
         $sort_by = 'id';
@@ -45,24 +45,16 @@ class TicketPriorityService implements TicketPriorityServiceInterface
         return $ticket->toArray();
     }
 
-    public function store($request)
+    public function store($validated)
     {
-        $validated = $request->validate([
-            'level' => 'required|integer|unique:ticket_prioties|level',
-            'name' => 'required|min:1|max:15|unique:ticket_prioties|name',
-        ]);
 
         $new_ticket_priority = $this->ticket_priority_repository->insert($validated);
 
         return $new_ticket_priority->toArray();
     }
 
-    public function update($request, $id)
+    public function update($validated, $id)
     {
-        $validated = $request->validate([
-            'level' => 'required|integer|unique:ticket_prioties|level,' .$id,
-            'name' => 'required|min:1|max:15|unique:ticket_prioties|name,' .$id,
-        ]);
 
         if(!$this->ticket_priority_repository->exist($id)) {
             $this->status = 404;

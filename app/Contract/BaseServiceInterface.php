@@ -6,13 +6,13 @@ use Illuminate\Http\Request;
 
 interface BaseServiceInterface
 {
-    public function index($count = 0);
+    public function index(int $count = 0);
 
-    public function show($id);
+    public function show(int $id);
 
-    public function store(Request $request);
+    public function store(array $validated);
 
-    public function update(Request $request, $id);
+    public function update(array $validated, $id);
 
     public function destroy($id);
 }

@@ -17,13 +17,8 @@ class AuthService implements AuthServiceInterface
         $this->auth_service = $auth_service;
     }
 
-    public function login(Request $request)
+    public function login(array $validated)
     {
-        $validated = $request->validate([
-            'email' => 'required',
-            'password' => 'required',
-        ]);
-
         $user = $this->auth_service->getUser($validated['email']);
         // dd($user);
         if(!$user || Hash::check($validated['password'], $user->password)) {

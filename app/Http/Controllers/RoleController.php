@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Contract\RoleServiceInterface;
+use Illuminate\Http\Request;
 
-class RoleController extends BaseController
+class RoleController extends Controller
 {
     private $role_service;
 
@@ -17,8 +18,145 @@ class RoleController extends BaseController
     public function __construct(RoleServiceInterface $role_service)
     {
         $this->role_service = $role_service;
-        $this->model_string = "Role";
-        // set base controller service
-        $this->setService($this->role_service);
+        // $this->model_string = "Role";
+        // // set base controller service
+        // $this->setService($this->role_service);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        // if(request()->user()->cannot('viewAny', Module::class)) {
+        //     return response()->json([
+        //         "status" => "Unauthorized",
+        //         "message" => "You can't access this information."
+        //     ], 401);
+        // }
+
+        $query_params = request()->query();
+        $item_count = $query_params['item_count'] ?? 10;
+
+        $response = $this->role_service->index($item_count);
+        $response["status"] = "Success";
+        $response["message"] = "Success.";
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+
+        $validated = $request->validate([
+            'name' => 'required|min:1|max:15|unique:roles,name',
+            'level' => 'required|integer'
+        ]);
+
+        // if(request()->user()->cannot('viewAny', Module::class)) {
+        //     return response()->json([
+        //         "status" => "Unauthorized",
+        //         "message" => "You can't access this information."
+        //     ], 401);
+        // }
+
+        $new_record = $this->role_service->store($validated);
+        $response = array(
+            "status" => "Success",
+            "message" => "Role successfuly created.",
+            "data" => $new_record
+        );
+
+        return response()->json($response, 201);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $data = $this->role_service->show($id);
+
+        // missing model
+        if($this->role_service->status === 404)
+            $response = [
+                "status" => "Not found",
+                "message" => "Role not found."
+            ];
+        // // unauthorize access
+        // else if(request()->user()->cannot('view', new Module($data))) {
+        //     $response =[
+        //         "status" => "Unauthorized",
+        //         "message" => "You can't access this information."
+        //     ];
+        //     $this->role_service->status = 401;
+        // }
+        else
+            $response = [
+                "status" => "Success",
+                "message" => "Success.",
+                "data" => $data
+            ];
+
+        return response()->json($response, $this->role_service->status);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|min:1|max:25|unique:roles,name,' . $id,
+            'level' => 'required|integer',
+        ]);
+
+        $data = $this->role_service->update($validated, $id);
+
+        if ($this->role_service->status === 404)
+            $response = array(
+                "status" => "Not found",
+                "message" => "Role not found."
+            );
+        else
+            $response = array(
+                "status" => "Success",
+                "message" => "Role successfuly updated.",
+                "data" => $data
+            );
+
+        return response()->json($response, $this->role_service->status);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+       $this->role_service->destroy($id);
+
+        $response = array(
+            "status" => "Success",
+            "message" => "Role successfuly removed."
+        );
+        return response()->json($response, $this->role_service->status);
     }
 }
