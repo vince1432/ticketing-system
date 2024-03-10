@@ -78,6 +78,10 @@ class UserService implements UserServiceInterface
                 $file = $this->file_repository->store($validated['image'], $new_user);
                 $response["user"]["image"] = $file['url'];
             }
+
+            // add roles. should array of id
+            if(array_key_exists('roles', $validated) && is_array($validated['roles'])  && count($validated['roles']))
+                $new_user->attachRoles($validated['roles']);
         }
 
         return $response;
@@ -92,6 +96,15 @@ class UserService implements UserServiceInterface
         }
 
         $user = $this->user_repository->update($validated, $user_id);
+
+        if(array_key_exists('image', $validated) && $validated['image']) {
+            $file = $this->file_repository->store($validated['image'], $user);
+            $response["user"]["image"] = $file['url'];
+        }
+
+        // add roles. should array of id
+        if(array_key_exists('roles', $validated) && is_array($validated['roles'])  && count($validated['roles']))
+            $user->attachRoles($validated['roles']);
 
         return $user->toArray();
     }

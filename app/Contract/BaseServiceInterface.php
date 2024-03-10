@@ -10,6 +10,12 @@ interface BaseServiceInterface
 
     public function show(int $id);
 
+    /**
+     * store
+     * Store roles
+     * @param  mixed $validated
+     * @return void
+     */
     public function store(array $validated);
 
     public function update(array $validated, $id);

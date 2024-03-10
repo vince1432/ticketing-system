@@ -51,12 +51,11 @@ class User extends Authenticatable
         'deleted_at'
     ];
 
-    /**
-     * Get the  name.
-     *
-     * @param  string  $value
-     * @return string
-     */
+    public function attachRoles($ids)
+    {
+        $existing_ids = $this->roles()->whereIn('roles.id', $ids)->pluck('roles.id');
+        $this->roles()->attach(collect($ids)->diff($existing_ids));
+    }
 
     public function tickets(): HasMany
     {
@@ -70,6 +69,6 @@ class User extends Authenticatable
 
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class)->select('roles.id', 'roles.name', 'roles.level');
     }
 }

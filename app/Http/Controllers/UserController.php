@@ -130,6 +130,8 @@ class UserController extends Controller
             'name' => 'nullable|max:255',
             'email' => 'nullable|max:255|email|unique:users,email,' . $id,
             'password' => 'nullable|min:6|max:50|confirmed',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'required|integer|distinct|exists:roles,id',
         ]);
 
         $data = $this->user_service->update($validated, $id);

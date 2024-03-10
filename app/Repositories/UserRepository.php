@@ -46,6 +46,7 @@ class UserRepository implements UserRepositoryInterface
     {
         return User::select('id', 'name', 'email', 'created_at', 'updated_at')
                 ->with('fileable')
+                ->with('roles')
                 ->where('id', $id)->first();
     }
 
