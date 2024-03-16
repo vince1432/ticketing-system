@@ -51,10 +51,16 @@ class User extends Authenticatable
         'deleted_at'
     ];
 
-    public function attachRoles($ids)
+    public function attachRoles(array $ids) : void
     {
-        $existing_ids = $this->roles()->whereIn('roles.id', $ids)->pluck('roles.id');
-        $this->roles()->attach(collect($ids)->diff($existing_ids));
+        $clc_ids = collect($ids);
+        $existing_ids = $this->roles()->pluck('roles.id');
+        $new_roles = $clc_ids->diff($existing_ids);
+        $missing_roles = $existing_ids->diff($clc_ids);
+
+        // dd($new_roles, $missing_roles);
+        $this->roles()->attach($new_roles);
+        $this->roles()->detach($missing_roles);
     }
 
     public function tickets(): HasMany

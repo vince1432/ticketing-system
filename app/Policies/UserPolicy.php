@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Constants\UserType;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -38,10 +39,15 @@ class UserPolicy
     public function view(User $user, User $model)
     {
         // user's roles
-        $ary_user_roles = collect($user->roles()->pluck('name'));
+        $clc_user_roles = collect($user->roles()->pluck('name'));
+        $clc_model_roles = collect($model->roles()->pluck('name'));
         // allowed roles
-        $ary_alwd_roles = collect([UserType::SUPER_ADMIN, UserType::ADMIN]);
-        $intersection = $ary_user_roles->intersect($ary_alwd_roles)->toArray();
+        $ary_alwd_roles = [UserType::SUPER_ADMIN];
+        if(!$clc_model_roles->contains(UserType::ADMIN) && !$clc_model_roles->contains(UserType::SUPER_ADMIN))
+            $ary_alwd_roles[] = UserType::ADMIN;
+
+        $clc_alwd_roles = collect($ary_alwd_roles);
+        $intersection = $clc_user_roles->intersect($clc_alwd_roles)->toArray();
 
         return boolval($intersection) || ($user->id === $model->id);
     }
@@ -50,9 +56,10 @@ class UserPolicy
      * Determine whether the user can create models.
      *
      * @param  \App\Models\User  $user
+     * @param  array  $roles
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user, array $roles)
     {
         // user's roles
         $ary_user_roles = collect($user->roles()->pluck('name'));
@@ -61,6 +68,11 @@ class UserPolicy
         $intersection = $ary_user_roles->intersect($ary_alwd_roles)->toArray();
 
         // only superadmin can create an admin
+        $user_roles = Role::select('id', 'name')->whereIn('id', $roles)->pluck('name');
+
+        if(($user_roles->contains(UserType::SUPER_ADMIN) || $user_roles->contains(UserType::ADMIN))
+            && !$ary_user_roles->contains(UserType::SUPER_ADMIN))
+            return false;
 
         return boolval($intersection);
     }
@@ -72,13 +84,27 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, User $model)
+    public function update(User $user, User $model, array $roles)
     {
         // user's roles
-        $ary_user_roles = collect($user->roles()->pluck('name'));
+        $clc_user_roles = collect($user->roles()->pluck('name'));
+        $clc_model_roles = collect($model->roles()->pluck('name'));
+
         // allowed roles
-        $ary_alwd_roles = collect([UserType::SUPER_ADMIN, UserType::ADMIN]);
-        $intersection = $ary_user_roles->intersect($ary_alwd_roles)->toArray();
+        $ary_alwd_roles = [UserType::SUPER_ADMIN];
+        // only superadmin can update an admin or superadmin
+        $user_roles = Role::select('id', 'name')->whereIn('id', $roles)->pluck('name');
+        if(
+            !$user_roles->contains(UserType::SUPER_ADMIN)
+            && !$user_roles->contains(UserType::ADMIN)
+            && !$clc_model_roles->contains(UserType::SUPER_ADMIN)
+            && !$clc_model_roles->contains(UserType::ADMIN)
+        )
+            $ary_alwd_roles[] = UserType::ADMIN;
+
+        $clc_alwd_roles = collect($ary_alwd_roles);
+
+        $intersection = $clc_user_roles->intersect($clc_alwd_roles)->toArray();
 
         return boolval($intersection) || ($user->id === $model->id);
     }
@@ -94,34 +120,15 @@ class UserPolicy
     {
         // user's roles
         $ary_user_roles = collect($user->roles()->pluck('name'));
+        $clc_model_roles = collect($model->roles()->pluck('name'));
         // allowed roles
+        $ary_alwd_roles = [UserType::SUPER_ADMIN];
+        if(!$clc_model_roles->contains(UserType::ADMIN) && !$clc_model_roles->contains(UserType::SUPER_ADMIN))
+            $ary_alwd_roles[] = UserType::ADMIN;
+
         $ary_alwd_roles = collect([UserType::SUPER_ADMIN, UserType::ADMIN]);
         $intersection = $ary_user_roles->intersect($ary_alwd_roles)->toArray();
 
         return boolval($intersection);
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, User $model)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, User $model)
-    {
-        //
     }
 }

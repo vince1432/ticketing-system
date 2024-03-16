@@ -66,12 +66,12 @@ class UserController extends Controller
             'roles.*' => 'required|integer|distinct|exists:roles,id',
         ]);
 
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
+        if(request()->user()->cannot('create', [User::class, $validated["roles"]])) {
+            return response()->json([
+                "status" => "Unauthorized",
+                "message" => "Unauthorized."
+            ], 401);
+        }
 
         $new_record = $this->user_service->store($validated);
         $response = array(
@@ -99,14 +99,14 @@ class UserController extends Controller
                 "status" => "Not found",
                 "message" => "User not found."
             ];
-        // // unauthorize access
-        // else if(request()->user()->cannot('view', new Module($data))) {
-        //     $response =[
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ];
-        //     $this->user_service->status = 401;
-        // }
+        // unauthorize access
+        else if(request()->user()->cannot('view', new User($data))) {
+            $response =[
+                "status" => "Unauthorized",
+                "message" => "Unauthorized."
+            ];
+            $this->user_service->status = 401;
+        }
         else
             $response = [
                 "status" => "Success",
@@ -134,6 +134,13 @@ class UserController extends Controller
             'roles.*' => 'required|integer|distinct|exists:roles,id',
         ]);
 
+        if(request()->user()->cannot('update', [User::find($id), $validated["roles"]])) {
+            return response()->json([
+                "status" => "Unauthorized",
+                "message" => "Unauthorized."
+            ], 401);
+        }
+
         $data = $this->user_service->update($validated, $id);
 
         if ($this->user_service->status === 404)
@@ -159,6 +166,13 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        if(request()->user()->cannot('delete', User::find($id))) {
+            return response()->json([
+                "status" => "Unauthorized",
+                "message" => "Unauthorized."
+            ], 401);
+        }
+
        $this->user_service->destroy($id);
 
         $response = array(
