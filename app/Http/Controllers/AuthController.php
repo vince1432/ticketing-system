@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Message;
+use App\Constants\RespStat;
 use App\Contract\AuthServiceInterface;
 use Illuminate\Http\Request;
 
@@ -26,13 +28,13 @@ class AuthController extends Controller
 
         if ($this->auth_service->status === 401)
             $response = array(
-                "status" => "Unauthorized",
-                "message" => "Invalid login credentials."
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::INV_CRED
             );
         else
             $response = array(
-                "status" => "Success",
-                "message" => "Success.",
+                "status" => RespStat::SUCCESS,
+                "message" => Message::SUCCESS,
                 "data" => $data
             );
 
@@ -43,8 +45,8 @@ class AuthController extends Controller
     {
         $this->auth_service->logout($request);
         $response = array(
-            "status" => "Success",
-            "message" => "Successfuly logged out.",
+            "status" => RespStat::SUCCESS,
+            "message" => Message::LOGOUT,
         );
 
         return response()->json($response, $this->auth_service->status);

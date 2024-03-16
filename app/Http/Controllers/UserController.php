@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Message;
+use App\Constants\RespStat;
 use App\Contract\UserServiceInterface;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -34,7 +36,7 @@ class UserController extends Controller
     {
         // if(request()->user()->cannot('viewAny', Module::class)) {
         //     return response()->json([
-        //         "status" => "Unauthorized",
+        //         "status" => RespStat::UNAUTHORIZED,
         //         "message" => "You can't access this information."
         //     ], 401);
         // }
@@ -43,8 +45,8 @@ class UserController extends Controller
         $item_count = $query_params['item_count'] ?? 10;
 
         $response = $this->user_service->index($item_count);
-        $response["status"] = "Success";
-        $response["message"] = "Success.";
+        $response["status"] = RespStat::SUCCESS;
+        $response["message"] = Message::SUCCESS;
 
         return response()->json($response, 200);
     }
@@ -68,15 +70,15 @@ class UserController extends Controller
 
         if(request()->user()->cannot('create', [User::class, $validated["roles"]])) {
             return response()->json([
-                "status" => "Unauthorized",
-                "message" => "Unauthorized."
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
             ], 401);
         }
 
         $new_record = $this->user_service->store($validated);
         $response = array(
-            "status" => "Success",
-            "message" => "User successfuly created.",
+            "status" => RespStat::SUCCESS,
+            "message" => "User " . Message::SUCCESS,
             "data" => $new_record
         );
 
@@ -96,21 +98,21 @@ class UserController extends Controller
         // missing model
         if($this->user_service->status === 404)
             $response = [
-                "status" => "Not found",
-                "message" => "User not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "User " . Message::NOT_FOUND_PREF
             ];
         // unauthorize access
         else if(request()->user()->cannot('view', new User($data))) {
             $response =[
-                "status" => "Unauthorized",
-                "message" => "Unauthorized."
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
             ];
             $this->user_service->status = 401;
         }
         else
             $response = [
-                "status" => "Success",
-                "message" => "Success.",
+                "status" => RespStat::SUCCESS,
+                "message" => Message::SUCCESS,
                 "data" => $data
             ];
 
@@ -136,8 +138,8 @@ class UserController extends Controller
 
         if(request()->user()->cannot('update', [User::find($id), $validated["roles"]])) {
             return response()->json([
-                "status" => "Unauthorized",
-                "message" => "Unauthorized."
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
             ], 401);
         }
 
@@ -145,13 +147,13 @@ class UserController extends Controller
 
         if ($this->user_service->status === 404)
             $response = array(
-                "status" => "Not found",
-                "message" => "User not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "User " . Message::NOT_FOUND_PREF
             );
         else
             $response = array(
-                "status" => "Success",
-                "message" => "User successfuly updated.",
+                "status" => RespStat::SUCCESS,
+                "message" => "User " . Message::UPDATED_PREF,
                 "data" => $data
             );
 
@@ -168,16 +170,16 @@ class UserController extends Controller
     {
         if(request()->user()->cannot('delete', User::find($id))) {
             return response()->json([
-                "status" => "Unauthorized",
-                "message" => "Unauthorized."
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
             ], 401);
         }
 
        $this->user_service->destroy($id);
 
         $response = array(
-            "status" => "Success",
-            "message" => "User successfuly removed."
+            "status" => RespStat::SUCCESS,
+            "message" => "User " . Message::REMOVED_PREF
         );
         return response()->json($response, $this->user_service->status);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Message;
+use App\Constants\RespStat;
 use App\Contract\TicketStatusServiceInterface;
 use Illuminate\Http\Request;
 
@@ -41,8 +43,8 @@ class TicketStatusController extends Controller
         $item_count = $query_params['item_count'] ?? 10;
 
         $response = $this->ticket_status_service->index($item_count);
-        $response["status"] = "Success";
-        $response["message"] = "Success.";
+        $response["status"] = RespStat::SUCCESS;
+        $response["message"] = Message::SUCCESS;
 
         return response()->json($response, 200);
     }
@@ -68,8 +70,8 @@ class TicketStatusController extends Controller
 
         $new_record = $this->ticket_status_service->store($validated);
         $response = array(
-            "status" => "Success",
-            "message" => "Ticket Status successfuly created.",
+            "status" => RespStat::SUCCESS,
+            "message" => "Ticket Status " . Message::CREATED_PREF,
             "data" => $new_record
         );
 
@@ -89,8 +91,8 @@ class TicketStatusController extends Controller
         // missing model
         if($this->ticket_status_service->status === 404)
             $response = [
-                "status" => "Not found",
-                "message" => "Ticket Status not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Ticket Status " . Message::NOT_FOUND_PREF
             ];
         // // unauthorize access
         // else if(request()->user()->cannot('view', new Module($data))) {
@@ -102,8 +104,8 @@ class TicketStatusController extends Controller
         // }
         else
             $response = [
-                "status" => "Success",
-                "message" => "Success.",
+                "status" => RespStat::SUCCESS,
+                "message" => Message::SUCCESS,
                 "data" => $data
             ];
 
@@ -127,13 +129,13 @@ class TicketStatusController extends Controller
 
         if ($this->ticket_status_service->status === 404)
             $response = array(
-                "status" => "Not found",
-                "message" => "Ticket Status not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Ticket Status " . Message::NOT_FOUND_PREF
             );
         else
             $response = array(
-                "status" => "Success",
-                "message" => "Ticket Status successfuly updated.",
+                "status" => RespStat::SUCCESS,
+                "message" => "Ticket Status " . Message::UPDATED_PREF,
                 "data" => $data
             );
 
@@ -151,8 +153,8 @@ class TicketStatusController extends Controller
        $this->ticket_status_service->destroy($id);
 
         $response = array(
-            "status" => "Success",
-            "message" => "Ticket Status successfuly removed."
+            "status" => RespStat::SUCCESS,
+            "message" => "Ticket Status " . Message::REMOVED_PREF
         );
         return response()->json($response, $this->ticket_status_service->status);
     }

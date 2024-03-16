@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Message;
+use App\Constants\RespStat;
 use App\Contract\TicketServiceInterface;
 use Illuminate\Http\Request;
 
@@ -41,8 +43,8 @@ class TicketController extends Controller
         $item_count = $query_params['item_count'] ?? 10;
 
         $response = $this->ticket_service->index($item_count);
-        $response["status"] = "Success";
-        $response["message"] = "Success.";
+        $response["status"] = RespStat::SUCCESS;
+        $response["message"] = Message::SUCCESS;
 
         return response()->json($response, 200);
     }
@@ -74,8 +76,8 @@ class TicketController extends Controller
 
         $new_record = $this->ticket_service->store($validated);
         $response = array(
-            "status" => "Success",
-            "message" => "Role successfuly created.",
+            "status" => RespStat::SUCCESS,
+            "message" => "Ticket " . Message::CREATED_PREF,
             "data" => $new_record
         );
 
@@ -95,8 +97,8 @@ class TicketController extends Controller
         // missing model
         if($this->ticket_service->status === 404)
             $response = [
-                "status" => "Not found",
-                "message" => "Role not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Ticket " . Message::NOT_FOUND_PREF
             ];
         // // unauthorize access
         // else if(request()->user()->cannot('view', new Module($data))) {
@@ -108,8 +110,8 @@ class TicketController extends Controller
         // }
         else
             $response = [
-                "status" => "Success",
-                "message" => "Success.",
+                "status" => RespStat::SUCCESS,
+                "message" => Message::SUCCESS,
                 "data" => $data
             ];
 
@@ -139,13 +141,13 @@ class TicketController extends Controller
 
         if ($this->ticket_service->status === 404)
             $response = array(
-                "status" => "Not found",
-                "message" => "Role not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Ticket " . Message::NOT_FOUND_PREF
             );
         else
             $response = array(
-                "status" => "Success",
-                "message" => "Role successfuly updated.",
+                "status" => RespStat::SUCCESS,
+                "message" => "Ticket " . Message::UPDATED_PREF,
                 "data" => $data
             );
 
@@ -163,8 +165,8 @@ class TicketController extends Controller
        $this->ticket_service->destroy($id);
 
         $response = array(
-            "status" => "Success",
-            "message" => "Role successfuly removed."
+            "status" => RespStat::SUCCESS,
+            "message" => "Ticket " . Message::REMOVED_PREF
         );
         return response()->json($response, $this->ticket_service->status);
     }
@@ -177,13 +179,13 @@ class TicketController extends Controller
         $comment = $this->ticket_service->close($request, $id);
         if ($this->ticket_service->status === 404)
             $response = array(
-                "status" => "Not found",
-                "message" => "Comment not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Comment " . Message::NOT_FOUND_PREF
             );
         else
             $response = array(
-                "status" => "Success",
-                "message" => "Comment successfuly updated.",
+                "status" => RespStat::SUCCESS,
+                "message" => "Comment " . Message::UPDATED_PREF,
                 "data" => $comment
             );
 
@@ -197,8 +199,8 @@ class TicketController extends Controller
         ]);
 
         $response = $this->ticket_service->comments($validated);
-        $response["status"] = "Success";
-        $response["message"] = "Success.";
+        $response["status"] = RespStat::SUCCESS;
+        $response["message"] = Message::SUCCESS;
 
         return response()->json($response, $this->ticket_service->status);
     }
@@ -208,13 +210,13 @@ class TicketController extends Controller
         $comment = $this->ticket_service->comment($id);
         if ($this->ticket_service->status === 404)
             $response = array(
-                "status" => "Not found",
-                "message" => "Comment not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Comment " . Message::NOT_FOUND_PREF
             );
         else
             $response = array(
-                "status" => "Success",
-                "message" => "Success.",
+                "status" => RespStat::SUCCESS,
+                "message" => Message::SUCCESS,
                 "data" => $comment
             );
 
@@ -230,8 +232,8 @@ class TicketController extends Controller
 
         $comment = $this->ticket_service->addComment($validated);
         $response = array(
-            "status" => "Success",
-            "message" => "Comment successfuly created.",
+            "status" => RespStat::SUCCESS,
+            "message" => "Comment " . Message::CREATED_PREF,
             "data" => $comment
         );
 
@@ -247,13 +249,13 @@ class TicketController extends Controller
         $comment = $this->ticket_service->updateComment($validated, $id);
         if ($this->ticket_service->status === 404)
             $response = array(
-                "status" => "Not found",
-                "message" => "Comment not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Comment " . Message::NOT_FOUND_PREF
             );
         else
             $response = array(
-                "status" => "Success",
-                "message" => "Comment successfuly updated.",
+                "status" => RespStat::SUCCESS,
+                "message" => "Comment " . Message::UPDATED_PREF,
                 "data" => $comment
             );
 
@@ -264,8 +266,8 @@ class TicketController extends Controller
     {
         $this->ticket_service->removeComment($id);
         $response = array(
-            "status" => "Success",
-            "message" => "Comment successfuly removed."
+            "status" => RespStat::SUCCESS,
+            "message" => "Comment " . Message::REMOVED_PREF
         );
 
         return response()->json($response, $this->ticket_service->status);

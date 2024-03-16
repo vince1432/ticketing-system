@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Message;
+use App\Constants\RespStat;
 use App\Contract\TicketPriorityServiceInterface;
 use Illuminate\Http\Request;
 
@@ -41,8 +43,8 @@ class TicketPriorityController extends Controller
         $item_count = $query_params['item_count'] ?? 10;
 
         $response = $this->ticket_priority_service->index($item_count);
-        $response["status"] = "Success";
-        $response["message"] = "Success.";
+        $response["status"] = RespStat::SUCCESS;
+        $response["message"] = Message::SUCCESS;
 
         return response()->json($response, 200);
     }
@@ -69,8 +71,8 @@ class TicketPriorityController extends Controller
 
         $new_record = $this->ticket_priority_service->store($validated);
         $response = array(
-            "status" => "Success",
-            "message" => "Ticket Priority successfuly created.",
+            "status" => RespStat::SUCCESS,
+            "message" => "Ticket Priority " . Message::CREATED_PREF,
             "data" => $new_record
         );
 
@@ -90,8 +92,8 @@ class TicketPriorityController extends Controller
         // missing model
         if($this->ticket_priority_service->status === 404)
             $response = [
-                "status" => "Not found",
-                "message" => "Ticket Priority not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Ticket Priority " . Message::NOT_FOUND_PREF
             ];
         // // unauthorize access
         // else if(request()->user()->cannot('view', new Module($data))) {
@@ -103,8 +105,8 @@ class TicketPriorityController extends Controller
         // }
         else
             $response = [
-                "status" => "Success",
-                "message" => "Success.",
+                "status" => RespStat::SUCCESS,
+                "message" => Message::SUCCESS,
                 "data" => $data
             ];
 
@@ -129,13 +131,13 @@ class TicketPriorityController extends Controller
 
         if ($this->ticket_priority_service->status === 404)
             $response = array(
-                "status" => "Not found",
-                "message" => "Ticket Priority not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Ticket Priority " . Message::NOT_FOUND_PREF
             );
         else
             $response = array(
-                "status" => "Success",
-                "message" => "Ticket Priority successfuly updated.",
+                "status" => RespStat::SUCCESS,
+                "message" => "Ticket Priority " . Message::UPDATED_PREF,
                 "data" => $data
             );
 
@@ -153,8 +155,8 @@ class TicketPriorityController extends Controller
        $this->ticket_priority_service->destroy($id);
 
         $response = array(
-            "status" => "Success",
-            "message" => "Ticket Priority successfuly removed."
+            "status" => RespStat::SUCCESS,
+            "message" => "Ticket Priority " . Message::REMOVED_PREF
         );
         return response()->json($response, $this->ticket_priority_service->status);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Message;
+use App\Constants\RespStat;
 use App\Contract\ModuleServiceInterface;
 use Illuminate\Http\Request;
 
@@ -41,8 +43,8 @@ class ModuleController extends Controller
         $item_count = $query_params['item_count'] ?? 10;
 
         $response = $this->module_service->index($item_count);
-        $response["status"] = "Success";
-        $response["message"] = "Success.";
+        $response["status"] = RespStat::SUCCESS;
+        $response["message"] = Message::SUCCESS;
 
         return response()->json($response, 200);
     }
@@ -70,8 +72,8 @@ class ModuleController extends Controller
 
         $new_record = $this->module_service->store($validated);
         $response = array(
-            "status" => "Success",
-            "message" => "Module successfuly created.",
+            "status" => RespStat::SUCCESS,
+            "message" => "Module " . Message::CREATED_PREF,
             "data" => $new_record
         );
 
@@ -91,8 +93,8 @@ class ModuleController extends Controller
         // missing model
         if($this->module_service->status === 404)
             $response = [
-                "status" => "Not found",
-                "message" => "Module not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Module " . Message::NOT_FOUND_PREF
             ];
         // // unauthorize access
         // else if(request()->user()->cannot('view', new Module($data))) {
@@ -104,8 +106,8 @@ class ModuleController extends Controller
         // }
         else
             $response = [
-                "status" => "Success",
-                "message" => "Success.",
+                "status" => RespStat::SUCCESS,
+                "message" => Message::SUCCESS,
                 "data" => $data
             ];
 
@@ -130,13 +132,13 @@ class ModuleController extends Controller
 
         if ($this->module_service->status === 404)
             $response = array(
-                "status" => "Not found",
-                "message" => "Module not found."
+                "status" => RespStat::NOT_FOUND,
+                "message" => "Module " . Message::NOT_FOUND_PREF
             );
         else
             $response = array(
-                "status" => "Success",
-                "message" => "Module successfuly updated.",
+                "status" => RespStat::SUCCESS,
+                "message" => "Module " . Message::UPDATED_PREF,
                 "data" => $data
             );
 
@@ -154,8 +156,8 @@ class ModuleController extends Controller
        $this->module_service->destroy($id);
 
         $response = array(
-            "status" => "Success",
-            "message" => "Module successfuly removed."
+            "status" => RespStat::SUCCESS,
+            "message" => "Module "  . Message::REMOVED_PREF
         );
         return response()->json($response, $this->module_service->status);
     }
