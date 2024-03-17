@@ -99,7 +99,7 @@ class UserController extends Controller
         if($this->user_service->status === 404)
             $response = [
                 "status" => RespStat::NOT_FOUND,
-                "message" => "User " . Message::NOT_FOUND_PREF
+                "message" => "User " . Message::NOT_FOUND_SUFF
             ];
         // unauthorize access
         else if(request()->user()->cannot('view', new User($data))) {
@@ -148,12 +148,12 @@ class UserController extends Controller
         if ($this->user_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "User " . Message::NOT_FOUND_PREF
+                "message" => "User " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
                 "status" => RespStat::SUCCESS,
-                "message" => "User " . Message::UPDATED_PREF,
+                "message" => "User " . Message::UPDATED_SUFF,
                 "data" => $data
             );
 
@@ -179,7 +179,7 @@ class UserController extends Controller
 
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "User " . Message::REMOVED_PREF
+            "message" => "User " . Message::REMOVED_SUFF
         );
         return response()->json($response, $this->user_service->status);
     }

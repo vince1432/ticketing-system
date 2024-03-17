@@ -73,7 +73,7 @@ class RoleController extends Controller
         $new_record = $this->role_service->store($validated);
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Role " . Message::CREATED_PREF,
+            "message" => "Role " . Message::CREATED_SUFF,
             "data" => $new_record
         );
 
@@ -94,7 +94,7 @@ class RoleController extends Controller
         if($this->role_service->status === 404)
             $response = [
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Role " . Message::NOT_FOUND_PREF
+                "message" => "Role " . Message::NOT_FOUND_SUFF
             ];
         // // unauthorize access
         // else if(request()->user()->cannot('view', new Module($data))) {
@@ -133,12 +133,12 @@ class RoleController extends Controller
         if ($this->role_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Role " . Message::NOT_FOUND_PREF
+                "message" => "Role " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
                 "status" => RespStat::SUCCESS,
-                "message" => "Role " . Message::UPDATED_PREF,
+                "message" => "Role " . Message::UPDATED_SUFF,
                 "data" => $data
             );
 
@@ -157,7 +157,7 @@ class RoleController extends Controller
 
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Role " . Message::UPDATED_PREF
+            "message" => "Role " . Message::UPDATED_SUFF
         );
         return response()->json($response, $this->role_service->status);
     }

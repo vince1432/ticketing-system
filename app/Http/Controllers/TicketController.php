@@ -77,7 +77,7 @@ class TicketController extends Controller
         $new_record = $this->ticket_service->store($validated);
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Ticket " . Message::CREATED_PREF,
+            "message" => "Ticket " . Message::CREATED_SUFF,
             "data" => $new_record
         );
 
@@ -98,7 +98,7 @@ class TicketController extends Controller
         if($this->ticket_service->status === 404)
             $response = [
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Ticket " . Message::NOT_FOUND_PREF
+                "message" => "Ticket " . Message::NOT_FOUND_SUFF
             ];
         // // unauthorize access
         // else if(request()->user()->cannot('view', new Module($data))) {
@@ -142,12 +142,12 @@ class TicketController extends Controller
         if ($this->ticket_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Ticket " . Message::NOT_FOUND_PREF
+                "message" => "Ticket " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
                 "status" => RespStat::SUCCESS,
-                "message" => "Ticket " . Message::UPDATED_PREF,
+                "message" => "Ticket " . Message::UPDATED_SUFF,
                 "data" => $data
             );
 
@@ -166,7 +166,7 @@ class TicketController extends Controller
 
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Ticket " . Message::REMOVED_PREF
+            "message" => "Ticket " . Message::REMOVED_SUFF
         );
         return response()->json($response, $this->ticket_service->status);
     }
@@ -180,12 +180,12 @@ class TicketController extends Controller
         if ($this->ticket_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Comment " . Message::NOT_FOUND_PREF
+                "message" => "Comment " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
                 "status" => RespStat::SUCCESS,
-                "message" => "Comment " . Message::UPDATED_PREF,
+                "message" => "Comment " . Message::UPDATED_SUFF,
                 "data" => $comment
             );
 
@@ -211,7 +211,7 @@ class TicketController extends Controller
         if ($this->ticket_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Comment " . Message::NOT_FOUND_PREF
+                "message" => "Comment " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
@@ -233,7 +233,7 @@ class TicketController extends Controller
         $comment = $this->ticket_service->addComment($validated);
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Comment " . Message::CREATED_PREF,
+            "message" => "Comment " . Message::CREATED_SUFF,
             "data" => $comment
         );
 
@@ -250,12 +250,12 @@ class TicketController extends Controller
         if ($this->ticket_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Comment " . Message::NOT_FOUND_PREF
+                "message" => "Comment " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
                 "status" => RespStat::SUCCESS,
-                "message" => "Comment " . Message::UPDATED_PREF,
+                "message" => "Comment " . Message::UPDATED_SUFF,
                 "data" => $comment
             );
 
@@ -267,7 +267,7 @@ class TicketController extends Controller
         $this->ticket_service->removeComment($id);
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Comment " . Message::REMOVED_PREF
+            "message" => "Comment " . Message::REMOVED_SUFF
         );
 
         return response()->json($response, $this->ticket_service->status);

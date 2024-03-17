@@ -4,12 +4,12 @@ namespace App\Constants;
 
 class Message {
     const UNAUTHORIZED = "You can't access this information.";
-    const NOT_FOUND_PREF = "not found.";
+    const NOT_FOUND_SUFF = "not found.";
 
     const SUCCESS = "Success.";
-    const CREATED_PREF = "successfuly created.";
-    const UPDATED_PREF = "successfuly updated.";
-    const REMOVED_PREF = "successfuly removed.";
+    const CREATED_SUFF = "successfuly created.";
+    const UPDATED_SUFF = "successfuly updated.";
+    const REMOVED_SUFF = "successfuly removed.";
 
     // login
     const LOGOUT = "Successfuly logged out.";

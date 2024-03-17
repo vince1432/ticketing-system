@@ -66,7 +66,7 @@ class BaseController extends Controller
         $new_record = $this->base_service->store($request);
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "{$this->model_string} " . Message::CREATED_PREF,
+            "message" => "{$this->model_string} " . Message::CREATED_SUFF,
             "data" => $new_record
         );
 
@@ -87,7 +87,7 @@ class BaseController extends Controller
         if($this->base_service->status === 404)
             $response = [
                 "status" => RespStat::NOT_FOUND,
-                "message" => Message::NOT_FOUND_PREF
+                "message" => Message::NOT_FOUND_SUFF
             ];
         // unauthorize access
         else if(request()->user()->cannot('view', new User($data))) {
@@ -121,12 +121,12 @@ class BaseController extends Controller
         if ($this->base_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "{$this->model_string} " . Message::NOT_FOUND_PREF
+                "message" => "{$this->model_string} " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
                 "status" => RespStat::SUCCESS,
-                "message" => "{$this->model_string} " . Message::UPDATED_PREF,
+                "message" => "{$this->model_string} " . Message::UPDATED_SUFF,
                 "data" => $data
             );
 
@@ -145,7 +145,7 @@ class BaseController extends Controller
 
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "{$this->model_string} " . Message::REMOVED_PREF
+            "message" => "{$this->model_string} " . Message::REMOVED_SUFF
         );
         return response()->json($response, $this->base_service->status);
     }

@@ -71,7 +71,7 @@ class TicketStatusController extends Controller
         $new_record = $this->ticket_status_service->store($validated);
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Ticket Status " . Message::CREATED_PREF,
+            "message" => "Ticket Status " . Message::CREATED_SUFF,
             "data" => $new_record
         );
 
@@ -92,7 +92,7 @@ class TicketStatusController extends Controller
         if($this->ticket_status_service->status === 404)
             $response = [
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Ticket Status " . Message::NOT_FOUND_PREF
+                "message" => "Ticket Status " . Message::NOT_FOUND_SUFF
             ];
         // // unauthorize access
         // else if(request()->user()->cannot('view', new Module($data))) {
@@ -130,12 +130,12 @@ class TicketStatusController extends Controller
         if ($this->ticket_status_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Ticket Status " . Message::NOT_FOUND_PREF
+                "message" => "Ticket Status " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
                 "status" => RespStat::SUCCESS,
-                "message" => "Ticket Status " . Message::UPDATED_PREF,
+                "message" => "Ticket Status " . Message::UPDATED_SUFF,
                 "data" => $data
             );
 
@@ -154,7 +154,7 @@ class TicketStatusController extends Controller
 
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Ticket Status " . Message::REMOVED_PREF
+            "message" => "Ticket Status " . Message::REMOVED_SUFF
         );
         return response()->json($response, $this->ticket_status_service->status);
     }

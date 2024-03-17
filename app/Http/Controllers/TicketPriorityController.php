@@ -72,7 +72,7 @@ class TicketPriorityController extends Controller
         $new_record = $this->ticket_priority_service->store($validated);
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Ticket Priority " . Message::CREATED_PREF,
+            "message" => "Ticket Priority " . Message::CREATED_SUFF,
             "data" => $new_record
         );
 
@@ -93,7 +93,7 @@ class TicketPriorityController extends Controller
         if($this->ticket_priority_service->status === 404)
             $response = [
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Ticket Priority " . Message::NOT_FOUND_PREF
+                "message" => "Ticket Priority " . Message::NOT_FOUND_SUFF
             ];
         // // unauthorize access
         // else if(request()->user()->cannot('view', new Module($data))) {
@@ -132,12 +132,12 @@ class TicketPriorityController extends Controller
         if ($this->ticket_priority_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Ticket Priority " . Message::NOT_FOUND_PREF
+                "message" => "Ticket Priority " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
                 "status" => RespStat::SUCCESS,
-                "message" => "Ticket Priority " . Message::UPDATED_PREF,
+                "message" => "Ticket Priority " . Message::UPDATED_SUFF,
                 "data" => $data
             );
 
@@ -156,7 +156,7 @@ class TicketPriorityController extends Controller
 
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Ticket Priority " . Message::REMOVED_PREF
+            "message" => "Ticket Priority " . Message::REMOVED_SUFF
         );
         return response()->json($response, $this->ticket_priority_service->status);
     }

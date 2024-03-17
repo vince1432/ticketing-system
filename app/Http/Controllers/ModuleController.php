@@ -73,7 +73,7 @@ class ModuleController extends Controller
         $new_record = $this->module_service->store($validated);
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Module " . Message::CREATED_PREF,
+            "message" => "Module " . Message::CREATED_SUFF,
             "data" => $new_record
         );
 
@@ -94,7 +94,7 @@ class ModuleController extends Controller
         if($this->module_service->status === 404)
             $response = [
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Module " . Message::NOT_FOUND_PREF
+                "message" => "Module " . Message::NOT_FOUND_SUFF
             ];
         // // unauthorize access
         // else if(request()->user()->cannot('view', new Module($data))) {
@@ -133,12 +133,12 @@ class ModuleController extends Controller
         if ($this->module_service->status === 404)
             $response = array(
                 "status" => RespStat::NOT_FOUND,
-                "message" => "Module " . Message::NOT_FOUND_PREF
+                "message" => "Module " . Message::NOT_FOUND_SUFF
             );
         else
             $response = array(
                 "status" => RespStat::SUCCESS,
-                "message" => "Module " . Message::UPDATED_PREF,
+                "message" => "Module " . Message::UPDATED_SUFF,
                 "data" => $data
             );
 
@@ -157,7 +157,7 @@ class ModuleController extends Controller
 
         $response = array(
             "status" => RespStat::SUCCESS,
-            "message" => "Module "  . Message::REMOVED_PREF
+            "message" => "Module "  . Message::REMOVED_SUFF
         );
         return response()->json($response, $this->module_service->status);
     }
