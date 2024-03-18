@@ -6,6 +6,7 @@ use App\Constants\Message;
 use App\Constants\RespStat;
 use App\Contract\TicketPriorityServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TicketPriorityController extends Controller
 {
@@ -20,9 +21,6 @@ class TicketPriorityController extends Controller
     public function __construct(TicketPriorityServiceInterface $ticket_priority_service)
     {
         $this->ticket_priority_service = $ticket_priority_service;
-        // $this->model_string = "Ticket Priority";
-        // // set base controller service
-        // $this->setService($this->ticket_priority_service);
     }
 
     /**
@@ -32,13 +30,6 @@ class TicketPriorityController extends Controller
      */
     public function index()
     {
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
-
         $query_params = request()->query();
         $item_count = $query_params['item_count'] ?? 10;
 
@@ -62,12 +53,12 @@ class TicketPriorityController extends Controller
             'name' => 'required|min:1|max:15|unique:ticket_prioties|name',
         ]);
 
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
 
         $new_record = $this->ticket_priority_service->store($validated);
         $response = array(
@@ -87,6 +78,13 @@ class TicketPriorityController extends Controller
      */
     public function show($id)
     {
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
         $data = $this->ticket_priority_service->show($id);
 
         // missing model
@@ -95,14 +93,6 @@ class TicketPriorityController extends Controller
                 "status" => RespStat::NOT_FOUND,
                 "message" => "Ticket Priority " . Message::NOT_FOUND_SUFF
             ];
-        // // unauthorize access
-        // else if(request()->user()->cannot('view', new Module($data))) {
-        //     $response =[
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ];
-        //     $this->ticket_priority_service->status = 401;
-        // }
         else
             $response = [
                 "status" => RespStat::SUCCESS,
@@ -126,6 +116,13 @@ class TicketPriorityController extends Controller
             'level' => 'required|integer|unique:ticket_prioties|level,' .$id,
             'name' => 'required|min:1|max:15|unique:ticket_prioties|name,' .$id,
         ]);
+
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
 
         $data = $this->ticket_priority_service->update($validated, $id);
 
@@ -152,6 +149,13 @@ class TicketPriorityController extends Controller
      */
     public function destroy($id)
     {
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
        $this->ticket_priority_service->destroy($id);
 
         $response = array(

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Constants\Message;
 use App\Constants\RespStat;
 use App\Contract\ModuleServiceInterface;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ModuleController extends Controller
 {
@@ -32,13 +34,6 @@ class ModuleController extends Controller
      */
     public function index()
     {
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
-
         $query_params = request()->query();
         $item_count = $query_params['item_count'] ?? 10;
 
@@ -63,12 +58,12 @@ class ModuleController extends Controller
             'description' => 'required|min:1|max:255'
         ]);
 
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
 
         $new_record = $this->module_service->store($validated);
         $response = array(
@@ -88,6 +83,13 @@ class ModuleController extends Controller
      */
     public function show($id)
     {
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
         $data = $this->module_service->show($id);
 
         // missing model
@@ -96,14 +98,6 @@ class ModuleController extends Controller
                 "status" => RespStat::NOT_FOUND,
                 "message" => "Module " . Message::NOT_FOUND_SUFF
             ];
-        // // unauthorize access
-        // else if(request()->user()->cannot('view', new Module($data))) {
-        //     $response =[
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ];
-        //     $this->module_service->status = 401;
-        // }
         else
             $response = [
                 "status" => RespStat::SUCCESS,
@@ -127,6 +121,13 @@ class ModuleController extends Controller
             'name' => 'required|min:1|max:15|unique:ticket_statuses,name,' . $id,
             'description' => 'required|min:1|max:255',
         ]);
+
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
 
         $data = $this->module_service->update($validated, $id);
 
@@ -153,6 +154,13 @@ class ModuleController extends Controller
      */
     public function destroy($id)
     {
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
        $this->module_service->destroy($id);
 
         $response = array(

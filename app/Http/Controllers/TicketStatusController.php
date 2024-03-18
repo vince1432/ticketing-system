@@ -6,6 +6,7 @@ use App\Constants\Message;
 use App\Constants\RespStat;
 use App\Contract\TicketStatusServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TicketStatusController extends Controller
 {
@@ -20,9 +21,6 @@ class TicketStatusController extends Controller
     public function __construct(TicketStatusServiceInterface $ticket_status_service)
     {
         $this->ticket_status_service = $ticket_status_service;
-        // $this->model_string = "Ticket Status";
-        // // set base controller service
-        // $this->setService($this->ticket_status_service);
     }
 
     /**
@@ -32,13 +30,6 @@ class TicketStatusController extends Controller
      */
     public function index()
     {
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
-
         $query_params = request()->query();
         $item_count = $query_params['item_count'] ?? 10;
 
@@ -61,12 +52,12 @@ class TicketStatusController extends Controller
             'name' => 'required|min:1|max:15|unique:ticket_statuses,name'
         ]);
 
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
 
         $new_record = $this->ticket_status_service->store($validated);
         $response = array(
@@ -86,6 +77,13 @@ class TicketStatusController extends Controller
      */
     public function show($id)
     {
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
         $data = $this->ticket_status_service->show($id);
 
         // missing model
@@ -94,14 +92,6 @@ class TicketStatusController extends Controller
                 "status" => RespStat::NOT_FOUND,
                 "message" => "Ticket Status " . Message::NOT_FOUND_SUFF
             ];
-        // // unauthorize access
-        // else if(request()->user()->cannot('view', new Module($data))) {
-        //     $response =[
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ];
-        //     $this->ticket_status_service->status = 401;
-        // }
         else
             $response = [
                 "status" => RespStat::SUCCESS,
@@ -124,6 +114,13 @@ class TicketStatusController extends Controller
         $validated = $request->validate([
             'name' => 'required|min:1|max:15|unique:ticket_statuses,name,' . $id,
         ]);
+
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
 
         $data = $this->ticket_status_service->update($validated, $id);
 
@@ -150,6 +147,13 @@ class TicketStatusController extends Controller
      */
     public function destroy($id)
     {
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
        $this->ticket_status_service->destroy($id);
 
         $response = array(

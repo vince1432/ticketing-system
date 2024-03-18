@@ -34,12 +34,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => RespStat::UNAUTHORIZED,
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
+        if(request()->user()->cannot('viewAny', User::class)) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
 
         $query_params = request()->query();
         $item_count = $query_params['item_count'] ?? 10;
@@ -93,6 +93,13 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        if(request()->user()->cannot('viewAny', User::find($id))) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
         $data = $this->user_service->show($id);
 
         // missing model

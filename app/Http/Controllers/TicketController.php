@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Constants\Message;
 use App\Constants\RespStat;
 use App\Contract\TicketServiceInterface;
+use App\Models\TicketComment;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TicketController extends Controller
 {
@@ -20,9 +23,6 @@ class TicketController extends Controller
     public function __construct(TicketServiceInterface $ticket_service)
     {
         $this->ticket_service = $ticket_service;
-        // $this->model_string = "Ticket";
-        // // set base controller service
-        // $this->setService($this->ticket_service);
     }
 
     /**
@@ -32,13 +32,6 @@ class TicketController extends Controller
      */
     public function index()
     {
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
-
         $query_params = request()->query();
         $item_count = $query_params['item_count'] ?? 10;
 
@@ -57,7 +50,6 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'title' => 'required|max:255',
             'summary' => 'required|min:1|max:1000',
@@ -66,13 +58,6 @@ class TicketController extends Controller
             'module_id' => 'nullable|exists:modules,id',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
-
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
 
         $new_record = $this->ticket_service->store($validated);
         $response = array(
@@ -100,14 +85,6 @@ class TicketController extends Controller
                 "status" => RespStat::NOT_FOUND,
                 "message" => "Ticket " . Message::NOT_FOUND_SUFF
             ];
-        // // unauthorize access
-        // else if(request()->user()->cannot('view', new Module($data))) {
-        //     $response =[
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ];
-        //     $this->ticket_service->status = 401;
-        // }
         else
             $response = [
                 "status" => RespStat::SUCCESS,
@@ -162,6 +139,13 @@ class TicketController extends Controller
      */
     public function destroy($id)
     {
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
        $this->ticket_service->destroy($id);
 
         $response = array(
@@ -246,6 +230,13 @@ class TicketController extends Controller
             'comment' => 'required|min:1|max:1000'
         ]);
 
+        if(request()->user()->cannot('update', TicketComment::find($id))) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
         $comment = $this->ticket_service->updateComment($validated, $id);
         if ($this->ticket_service->status === 404)
             $response = array(
@@ -264,6 +255,13 @@ class TicketController extends Controller
 
     public function removeComment($id)
     {
+        if(request()->user()->cannot('delete', TicketComment::find($id))) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
         $this->ticket_service->removeComment($id);
         $response = array(
             "status" => RespStat::SUCCESS,

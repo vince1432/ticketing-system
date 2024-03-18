@@ -6,6 +6,7 @@ use App\Constants\Message;
 use App\Constants\RespStat;
 use App\Contract\RoleServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class RoleController extends Controller
 {
@@ -32,13 +33,6 @@ class RoleController extends Controller
      */
     public function index()
     {
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
-
         $query_params = request()->query();
         $item_count = $query_params['item_count'] ?? 10;
 
@@ -63,12 +57,12 @@ class RoleController extends Controller
             'level' => 'required|integer'
         ]);
 
-        // if(request()->user()->cannot('viewAny', Module::class)) {
-        //     return response()->json([
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ], 401);
-        // }
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
 
         $new_record = $this->role_service->store($validated);
         $response = array(
@@ -88,6 +82,13 @@ class RoleController extends Controller
      */
     public function show($id)
     {
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
         $data = $this->role_service->show($id);
 
         // missing model
@@ -96,14 +97,6 @@ class RoleController extends Controller
                 "status" => RespStat::NOT_FOUND,
                 "message" => "Role " . Message::NOT_FOUND_SUFF
             ];
-        // // unauthorize access
-        // else if(request()->user()->cannot('view', new Module($data))) {
-        //     $response =[
-        //         "status" => "Unauthorized",
-        //         "message" => "You can't access this information."
-        //     ];
-        //     $this->role_service->status = 401;
-        // }
         else
             $response = [
                 "status" => RespStat::SUCCESS,
@@ -127,6 +120,13 @@ class RoleController extends Controller
             'name' => 'required|min:1|max:25|unique:roles,name,' . $id,
             'level' => 'required|integer',
         ]);
+
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
 
         $data = $this->role_service->update($validated, $id);
 
@@ -153,6 +153,13 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
+        if(!Gate::allows('is-admin')) {
+            return response()->json([
+                "status" => RespStat::UNAUTHORIZED,
+                "message" => Message::UNAUTHORIZED
+            ], 401);
+        }
+
        $this->role_service->destroy($id);
 
         $response = array(
