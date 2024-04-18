@@ -22,7 +22,7 @@ class FileRepository implements FileRepositoryInterface
                 "url" => $data["url"],
             ]);
 
-        return $new_file->fileable();
+        return $new_file;
     }
 
     public function update(File $file, array $data) : File
